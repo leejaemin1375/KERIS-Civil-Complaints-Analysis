@@ -33,7 +33,7 @@ function draw(){
   svg.selectAll('path.sel').raise();
   send({type:'names',names:geo.features.map(nm)});
 }
-function load(r){region=r;const msg=document.getElementById('msg');if(cache[r]){geo=cache[r];msg.style.display='none';draw();return;}geo=null;d3.select('#m').selectAll('*').remove();msg.style.display='flex';msg.textContent='지도 불러오는 중…';fetch('geo/'+r+'.json').then(x=>x.json()).then(j=>{cache[r]=j;if(region!==r)return;geo=j;msg.style.display='none';draw();}).catch(()=>{msg.textContent='지도 경계 자료를 불러오지 못했습니다';});}
+function load(r){region=r;const msg=document.getElementById('msg');if(cache[r]){geo=cache[r];msg.style.display='none';draw();return;}geo=null;d3.select('#m').selectAll('*').remove();msg.style.display='flex';msg.textContent='지도 불러오는 중…';fetch('geo/'+r+'.json?v=2').then(x=>x.json()).then(j=>{cache[r]=j;if(region!==r)return;geo=j;msg.style.display='none';draw();}).catch(()=>{msg.textContent='지도 경계 자료를 불러오지 못했습니다';});}
 addEventListener('message',e=>{const d=e.data;if(!d||d.src!=='dash')return;counts=d.counts||{};sel=d.sel||'';if(d.region&&d.region!==region)load(d.region);else draw();});
 addEventListener('resize',draw);
 send({type:'ready'});
