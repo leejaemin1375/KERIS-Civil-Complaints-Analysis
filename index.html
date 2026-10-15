@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>세종시 민원분석 모델</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -918,6 +917,7 @@ button:disabled{opacity:0.4;cursor:not-allowed}
         </span>
       </sc-if>
     </div>
+    <button onClick="{{ dlRp }}" title="전체 목록을 엑셀(xlsx)로 내려받기" style="height:32px;border:1px solid #cdd1d5;border-radius:2px;background:#fff;color:#1e2124;padding:0 10px;font-size:13px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;" style-hover="background:#eef2f7"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>Excel</button>
     <button onClick="{{ closeRp }}" style="height:32px;border:1px solid #cdd1d5;border-radius:2px;background:#fff;color:#1e2124;padding:0 12px;font-size:13.5px;cursor:pointer;white-space:nowrap;" style-hover="background:#eef2f7">닫기</button>
   </div>
   <div style="flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:14px;">
@@ -989,8 +989,16 @@ button:disabled{opacity:0.4;cursor:not-allowed}
             <div style="display:flex;flex-direction:column;gap:8px;">
               <h4 style="margin:0;font-family:inherit;font-size:16px;font-weight:700;color:#063a74;letter-spacing:0;">{{ sec.title }}</h4>
               <sc-for list="{{ sec.items }}" as="it" hint-placeholder-count="3">
-                <div style="display:flex;flex-direction:column;gap:3px;">
-                  <span style="font-size:14.5px;font-weight:700;line-height:1.6;">{{ it.head }}</span>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                  <sc-if value="{{ it.hasHead }}" hint-placeholder-val="{{ true }}"><span style="font-size:14.5px;font-weight:700;line-height:1.6;text-wrap:pretty;">{{ it.head }}</span></sc-if>
+                  <sc-if value="{{ it.hasTbl }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:4px;margin:2px 0 4px;">
+                      <div style="display:grid;grid-template-columns:{{ it.cols }};border-top:1px solid #b1b8be;border-left:1px solid #b1b8be;font-size:12px;">
+                        <sc-for list="{{ it.cells }}" as="c" hint-placeholder-count="6"><span style="padding:4px 6px;border-right:1px solid #b1b8be;border-bottom:1px solid #b1b8be;background:{{ c.bg }};font-weight:{{ c.fw }};text-align:{{ c.al }};line-height:1.45;word-break:keep-all;">{{ c.v }}</span></sc-for>
+                      </div>
+                      <sc-if value="{{ it.hasCap }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#464c53;text-align:center;">&lt;{{ it.cap }}&gt;</span></sc-if>
+                    </div>
+                  </sc-if>
                   <sc-for list="{{ it.lines }}" as="ln" hint-placeholder-count="2"><span style="font-size:14px;line-height:1.65;padding-left:14px;text-wrap:pretty;">- {{ ln }}</span></sc-for>
                 </div>
               </sc-for>
@@ -1520,6 +1528,144 @@ class Component extends DCLogic {
   }
   preview(r) {
     const oi = this.officeIdx(), [office, home] = OFFICES[oi], A = agg(oi, this.cov(oi), r.from, r.to), c = this.compare(oi, r.from, r.to, r.cmp), pn = periodName(r.from, r.to), T = A.total;
+    const len = r.to - r.from + 1, inc = r.inc, secs = [], P = pc, F = fmt;
+    const it = (head, rows, widths, cap, lines) => ({ head: head || '', tbl: rows ? { rows, widths } : null, cap: cap || '', lines: lines || [] });
+    const dt = x => `${MONTHS[x.mi].label}.${String(x.day).padStart(2, '0')}`;
+    const cnt = (rs, f) => { const o = {}; rs.forEach(x => { const k = f(x); o[k] = (o[k] || 0) + 1; }); return Object.entries(o).sort((a, b) => b[1] - a[1]); };
+    const avgD = rs => { const d = rs.filter(x => x.done); return d.length ? sum(d.map(x => x.days)) / d.length : null; };
+    const score = rs => { const s = rs.filter(x => x.sat >= 0); return s.length ? sum(s.map(x => 5 - x.sat)) / s.length : null; };
+    const pidLabel = pid => `민원인 #${String((([...String(pid)].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7)) % 9000) + 1000)}`;
+    const bkL = A.bs.list.map((l, i) => [l, A.bucket[i]]), bk = bkL.slice().sort((a, b) => b[1] - a[1]);
+    const chG = desc(A.chG), chD = desc(A.chD), sido = desc(A.sido), hy = HYUN.map((h, i) => [h[0], A.hyun[i]]).sort((a, b) => b[1] - a[1]);
+    const satUp = A.sat[0] + A.sat[1], satDn = A.sat[3] + A.sat[4], sAll = score(A.recs);
+    const subs = SUBS.map((s, i) => [s.n, A.sub[i], HYUN[s.h][0]]).filter(s => s[1]).sort((a, b) => b[1] - a[1]);
+    const depts = desc(A.dept), top4 = depts.slice(0, 4), top4N = sum(top4.map(d => d[1]));
+    const PL = A.persons, PN = PL.length || 1, rep = PL.filter(p => p[1].length >= REP_MIN), repRecs = rep.flatMap(p => p[1]), single = PL.filter(p => p[1].length === 1).length;
+    const ch = c.A ? (T - c.A.total) / c.A.total * 100 : null;
+    secs.push({ title: 'Ⅰ. 분석 개요', items: [it('', null, null, '', [
+      `대상 기간: ${rangeLabel(r.from, r.to)} (${len}개월)`,
+      `분석 데이터: 기간 내 ${office}에 신청된 전체 민원 (총 ${F(T)}건)`,
+      `비교 기준: ${c.name} ${c.label}${ch !== null ? ` (${F(c.A.total)}건, ${ch >= 0 ? '+' : ''}${ch.toFixed(1)}%)` : ' (데이터 없음)'}`,
+      '분석 방향: 현안별, 기간별, 지역별, 부서별, 민원인별 등 주제별 분석',
+      `분석 방법: 민원 분석 보고서 생성 서비스 자동 집계 (현안 ${HYUN.length}종 · 세부현안 ${SUBS.length}종 분류표 적용)`
+    ])] });
+    secs.push({ title: 'Ⅱ. 데이터 점검', items: [it('', [['항목', '기재 건수', '기재율(%)', '비고'],
+      ['민원인 주소', F(A.addr), P(A.addr, T), '시도·하위주소 분석에 사용'],
+      ['민원처리일시', F(A.doneN), P(A.doneN, T), '빈칸은 처리 중으로 보고 처리기간에서 제외'],
+      ['최종만족도', F(A.satN), P(A.satN, T), '무응답은 만족도 분석에서 제외']], [3, 2, 2, 5], '주요 선택 항목 기재 현황',
+      [`필수 항목(신청번호·신청일시·처리부서 등) 결측 없음`, `민원인 식별: 민원인 고유번호 기준 ${F(PL.length)}명`])] });
+    if (inc.total) {
+      const avgB = T / A.bs.list.length, mn = bk[bk.length - 1];
+      const cmpLine = c.A ? [`${c.name}(${c.label}) ${F(c.A.total)}건 대비 ${F(Math.abs(T - c.A.total))}건 ${T >= c.A.total ? '증가' : '감소'}(${ch >= 0 ? '+' : ''}${ch.toFixed(1)}%)`] : [];
+      secs.push({ title: 'Ⅲ. 분석 결과 - 총괄', items: [
+        it(`① (건수) ${pn.name} 민원은 총 ${F(T)}건이며, ${bk[0][0]}에 가장 많은 민원 발생`, [['구분', '건수(건)', '비율(%)'], ...bkL.map(([l, n]) => [l, F(n), P(n, T)]), ['합계', F(T), '100.0']], [3, 2, 2], `${A.bs.unit} 민원 건수·비율`, [
+          `${bk[0][0]}이 ${F(bk[0][1])}건(${P(bk[0][1], T)}%)으로 가장 많으며, ${A.bs.unit} 평균 ${F(avgB)}건의 ${(bk[0][1] / (avgB || 1)).toFixed(1)}배`,
+          `가장 적은 구간은 ${mn[0]} ${F(mn[1])}건(${P(mn[1], T)}%)`, ...cmpLine]),
+        it(`② (신청경로) 접수 채널은 ${chG[0][0]}에 집중`, [['신청경로', '건수(건)', '비율(%)'], ...chG.map(([k, n]) => [k, F(n), P(n, T)]), ['합계', F(T), '100.0']], [4, 2, 2], '신청경로별 민원 건수·비율', [
+          `${chG[0][0]}가 ${P(chG[0][1], T)}%(${F(chG[0][1])}건)${chG[1] ? `, 다음으로 ${chG[1][0]} ${P(chG[1][1], T)}%(${F(chG[1][1])}건)` : ''}`,
+          ...(chG.length > 2 ? [`그 밖에 ${chG.slice(2, 5).map(([k, n]) => `${k} ${P(n, T)}%`).join(', ')}`] : [])]),
+        it('', [['세부 신청경로', '건수(건)', '비율(%)'], ...chD.map(([k, n]) => [k, F(n), P(n, T)])], [4, 2, 2], '세부 신청경로별 민원 건수·비율'),
+        it(`③ (시도분포) ${sido[0] ? sido[0][0] : home} 민원 중심으로 분포`, [['시도', '건수(건)', '비율(%)'], ...sido.map(([k, n]) => [k, F(n), P(n, A.addr)]), ['합계', F(A.addr), '100.0']], [3, 2, 2], '시도별 민원 건수·비율 (주소 기재 민원 기준)', [
+          `민원인 주소 기재율 ${P(A.addr, T)}%(${F(A.addr)}건)`,
+          sido.slice(0, 3).map(([k, n]) => `${k} ${P(n, A.addr)}%(${F(n)}건)`).join(', ') + ' 순']),
+        it(`④ (만족도) 만족도 응답률 ${P(A.satN, T)}%, 응답자 평균 ${sAll == null ? '—' : sAll.toFixed(2)}점(5점 만점)`, [['만족도', '건수(건)', '비율(%)'], ...SAT.map((s, i) => [s, F(A.sat[i]), P(A.sat[i], A.satN)]), ['응답 합계', F(A.satN), '100.0'], ['무응답', F(T - A.satN), `전체의 ${P(T - A.satN, T)}`]], [3, 2, 2], '만족도 응답 분포', [
+          `응답자 중 만족 이상 ${P(satUp, A.satN)}%(${F(satUp)}건), 불만 이하 ${P(satDn, A.satN)}%(${F(satDn)}건), 보통 ${P(A.sat[2], A.satN)}%(${F(A.sat[2])}건)`,
+          '점수 기준: 매우만족 5점, 만족 4점, 보통 3점, 불만 2점, 매우불만 1점']),
+        it(`⑤ (현안별) ${hy[0][0]}(${P(hy[0][1], T)}%)이 가장 많고, ${hy.slice(1, 4).map(h => `${h[0]}(${P(h[1], T)}%)`).join(', ')} 순`, [['순위', '현안', '건수(건)', '비율(%)'], ...hy.map(([k, n], i) => [i + 1, k, F(n), P(n, T)])], [1, 4, 2, 2], '현안별 민원 건수·비율')
+      ] });
+    }
+    const det = [];
+    if (inc.kw) {
+      const dg = desc(A.dong);
+      if (dg.length) {
+        det.push(it(`(지역 분포) ${home} 민원(총 ${F(A.homeN)}건) 중 ${dg[0][0]} ${F(dg[0][1])}건(${P(dg[0][1], A.homeN)}%)${dg[1] ? `, ${dg[1][0]} ${F(dg[1][1])}건(${P(dg[1][1], A.homeN)}%)` : ''}${dg[2] ? `, ${dg[2][0]} ${F(dg[2][1])}건(${P(dg[2][1], A.homeN)}%)` : ''} 순`,
+          [['순위', '하위주소', '건수(건)', '비율(%)'], ...dg.map(([k, n], i) => [i + 1, k, F(n), P(n, A.homeN)]), ['', '합계', F(A.homeN), '100.0']], [1, 3, 2, 2], `${home} 내 지역별 민원 건수·비율`));
+        det.push(it('', [['지역', '1순위 세부현안', '2순위', '3순위'], ...dg.slice(0, 5).map(([k]) => { const s = desc(A.dongSub[k] || {}); return [k, ...[0, 1, 2].map(j => s[j] ? `${s[j][0]}(${s[j][1]})` : '—')]; })], [2, 3, 3, 3], `${home} 내 민원 발생 Top5 지역별 주요 세부현안`,
+          dg.slice(0, 5).map(([k, n]) => { const s = desc(A.dongSub[k] || {}); return `(${k}) ${s[0] ? `${s[0][0]} ${s[0][1]}건(지역 내 ${P(s[0][1], n)}%)이 가장 많음` : '—'}`; })));
+      }
+    }
+    if (inc.total && len > 1 && A.peak) {
+      const pm = A.peak.mi, mh = desc(A.monthHyun[pm] || {}), ms = desc(A.monthSub[pm] || {}), pn2 = A.peak.n;
+      det.push(it(`(최다 발생 월) ${MONTHS[pm].label}에 ${F(pn2)}건(${P(pn2, T)}%)으로 가장 많은 민원 발생, 월평균 ${F(T / len)}건의 ${(pn2 / (T / len)).toFixed(1)}배`,
+        [['순위', '현안', '건수(건)', '비율(%)'], ...mh.slice(0, 10).map(([k, n], i) => [i + 1, k, F(n), P(n, pn2)])], [1, 4, 2, 2], `${MONTHS[pm].label} 민원 현안 Top10`,
+        [`${MONTHS[pm].label} 현안 중 ${mh[0][0]}이 ${P(mh[0][1], pn2)}%로 가장 많음`]));
+      det.push(it('', [['순위', '세부현안', '건수(건)', '비율(%)'], ...ms.slice(0, 10).map(([k, n], i) => [i + 1, k, F(n), P(n, pn2)])], [1, 4, 2, 2], `${MONTHS[pm].label} 민원 세부현안 Top10`,
+        [`세부현안은 ${ms.slice(0, 3).map(([k, n]) => `${k}(${F(n)}건, ${P(n, pn2)}%)`).join(', ')} 순`]));
+    }
+    if (inc.peak) {
+      const y = this.compare(oi, r.from, r.to, 'yoy');
+      if (!y.ok) det.push(it('(전년 동기 대비) 비교 데이터 없음', null, null, '', [`전년 동기(${y.label}) 데이터가 없어 비교하지 않음`]));
+      else {
+        const Y = y.A, dT = T - Y.total, rows = SUBS.map((s, i) => [s.n, A.sub[i], Y.sub[i]]).filter(x => x[1] !== x[2]).sort((a, b) => (b[1] - b[2]) - (a[1] - a[2]));
+        const up = rows.filter(x => x[1] > x[2]).slice(0, 10), dn = rows.filter(x => x[1] < x[2]).reverse().slice(0, 5);
+        const rw = x => [x[0], F(x[2]), F(x[1]), `${x[1] - x[2] > 0 ? '+' : ''}${F(x[1] - x[2])}`, x[2] ? `${x[1] >= x[2] ? '+' : ''}${Math.round((x[1] - x[2]) / x[2] * 100)}%` : '신규'];
+        det.push(it(`(전년 동기 대비) 전체 민원 ${F(Math.abs(dT))}건 ${dT >= 0 ? '증가' : '감소'} (${y.label} ${F(Y.total)}건 → ${F(T)}건, ${dT >= 0 ? '+' : ''}${P(dT, Y.total)}%)`,
+          up.length ? [['세부현안', '전년 동기', '올해', '증감(건)', '증감률'], ...up.map(rw)] : null, [3, 2, 2, 2, 2], '전년 동기 대비 증가 세부현안 Top10',
+          up.length ? [`증가 건수가 큰 세부현안: ${up.slice(0, 3).map(x => `${x[0]} +${F(x[1] - x[2])}건`).join(', ')}`] : ['전년 동기보다 늘어난 세부현안 없음']));
+        if (dn.length) det.push(it('', [['세부현안', '전년 동기', '올해', '증감(건)', '증감률'], ...dn.map(rw)], [3, 2, 2, 2, 2], '전년 동기 대비 감소 세부현안 Top5'));
+      }
+    }
+    if (inc.sub) {
+      const t10 = sum(subs.slice(0, 10).map(s => s[1]));
+      det.push(it(`(세부현안) ${subs.slice(0, 4).map(s => `${s[0]}(${F(s[1])}건)`).join(', ')} 순`, [['순위', '세부현안', '현안', '건수(건)', '비율(%)'], ...subs.slice(0, 20).map(([k, n, h], i) => [i + 1, k, h, F(n), P(n, T)])], [1, 3, 3, 2, 2], '세부현안별 Top20 민원 건수·비율',
+        [`1위부터 10위까지의 합 ${F(t10)}건(${P(t10, T)}%)`, `전체 ${SUBS.length}개 세부현안 중 ${subs.length}개에서 민원 발생`]));
+    }
+    if (inc.dept) {
+      const dAvg = k => A.deptDone[k] ? A.deptDays[k] / A.deptDone[k] : null;
+      det.push(it(`(처리부서) ${top4.map(d => `${d[0]}(${F(d[1])}건)`).join(', ')}가 전체 민원의 ${P(top4N, T)}% 처리`,
+        [['순위', '처리부서', '건수(건)', '비율(%)', '평균 처리기간'], ...depts.map(([k, n], i) => [i + 1, k, F(n), P(n, T), dAvg(k) == null ? '—' : `${dAvg(k).toFixed(1)}일`])], [1, 4, 2, 2, 2], '부서별 민원 처리 건수·평균 처리기간'));
+      det.push(it('', [['처리부서', '주요 세부현안 (건수)'], ...top4.map(([k]) => [k, cnt(A.recs.filter(x => x.dept === k), x => SUBS[x.s].n).slice(0, 4).map(([s, n]) => `${s}(${n})`).join(', ')])], [2, 6], '최다 민원 처리부서 Top4 주요 세부현안',
+        top4.map(([k, n]) => { const s = cnt(A.recs.filter(x => x.dept === k), x => SUBS[x.s].n); return `(${k}) ${s[0][0]} ${s[0][1]}건(부서 내 ${P(s[0][1], n)}%)이 가장 많음`; })));
+      const sd = SUBS.map((s, i) => [s.n, A.subDone[i], A.subDone[i] ? A.subDays[i] / A.subDone[i] : 0]).filter(x => x[1] >= 3).sort((a, b) => b[2] - a[2]);
+      const slow = depts.map(([k]) => [k, dAvg(k)]).filter(x => x[1] != null && x[1] > A.avgDays).sort((a, b) => b[1] - a[1]);
+      det.push(it(`(처리기간) 평균 민원처리 기간 ${A.avgDays.toFixed(2)}일 (접수일시~처리일시, 처리일시 있는 ${F(A.doneN)}건 기준)`,
+        [['순위', '세부현안', '처리 건수', '평균 처리기간'], ...sd.slice(0, 10).map(([k, n, d], i) => [i + 1, k, F(n), `${d.toFixed(1)}일`])], [1, 4, 2, 2], '세부현안별 평균 처리기간 상위 10 (처리 3건 이상)',
+        [`평균보다 처리기간이 긴 부서: ${slow.slice(0, 4).map(x => `${x[0]}(${x[1].toFixed(1)}일)`).join(', ') || '없음'}`, `처리기간이 긴 세부현안: ${sd.slice(0, 4).map(x => `${x[0]}(${x[2].toFixed(1)}일)`).join(', ')}`]));
+      if (A.longest.length) det.push(it('', [['순위', '신청일', '제목', '세부현안', '처리부서', '처리기간'], ...A.longest.map((x, i) => [i + 1, dt(x), recTitle(x), SUBS[x.s].n, x.dept, `${x.days.toFixed(1)}일`])], [1, 2, 5, 2, 2, 2], '처리기간 상위 Top20 개별 민원',
+        [`(상위 Top20) 처리기간 ${A.longest[A.longest.length - 1].days.toFixed(1)}~${A.longest[0].days.toFixed(1)}일, ${cnt(A.longest, x => SUBS[x.s].n).slice(0, 3).map(([k, n]) => `${k} ${n}건`).join(', ')} 순`,
+          `(하위 Top20) 처리기간 ${dayFmt(A.shortest[0].days)}~${dayFmt(A.shortest[A.shortest.length - 1].days)}, ${cnt(A.shortest, x => SUBS[x.s].n).slice(0, 3).map(([k, n]) => `${k} ${n}건`).join(', ')} 순`]));
+    }
+    const apx = [];
+    if (inc.person) {
+      const dist = cnt(PL, p => p[1].length).map(([k, n]) => [+k, n]).sort((a, b) => a[0] - b[0]);
+      const top3 = rep.slice(0, 3), t3N = sum(top3.map(p => p[1].length)), sRep = score(repRecs);
+      det.push(it(`(다빈도 민원인) 총 ${F(PL.length)}명 중 ${REP_MIN}건 이상 접수한 다빈도 민원인 ${F(rep.length)}명(${P(rep.length, PN)}%)이 전체 민원의 ${P(repRecs.length, T)}%(${F(repRecs.length)}건) 접수`,
+        [['접수 건수', '민원인 수(명)', '비율(%)'], ...dist.map(([k, n]) => [`${k}건`, F(n), P(n, PN)]), ['합계', F(PL.length), '100.0']], [2, 2, 2], '기간 내 접수 건수별 민원인 수 분포',
+        [`1건만 접수한 민원인 ${F(single)}명(${P(single, PN)}%)`, ...(top3.length ? [`상위 ${top3.length}명(${top3.map(p => `${p[1].length}건`).join('·')})이 합계 ${F(t3N)}건(전체의 ${P(t3N, T)}%) 접수`] : []),
+          `만족도 평균: 다빈도 민원인 ${sRep == null ? '—' : `${sRep.toFixed(2)}점`}, 전체 민원 ${sAll == null ? '—' : `${sAll.toFixed(2)}점`} (5점 만점)`]));
+      top3.forEach(([pid, rs], k) => {
+        const ad = avgD(rs), ms = cnt(rs, x => x.mi).map(([m, n]) => [+m, n]).sort((a, b) => a[0] - b[0]), ss = cnt(rs, x => SUBS[x.s].n), ds = cnt(rs, x => x.dept);
+        det.push(it(`○ (Top${k + 1} 다빈도 민원인, ${rs.length}건) ${pidLabel(pid)} · 평균 처리기간 ${ad == null ? '—' : `${ad.toFixed(1)}일`}(전체 평균 ${A.avgDays.toFixed(1)}일)`, null, null, '', [
+          `(접수 추이) ${ms.map(([m, n]) => `${MONTHS[m].short || MONTHS[m].label} ${n}건`).join(', ')}`,
+          `(세부현안) ${ss.slice(0, 5).map(([s, n]) => `${s} ${n}건`).join(', ')}`,
+          `(처리부서) ${ds.slice(0, 4).map(([s, n]) => `${s} ${n}건`).join(', ')}${ds.length > 4 ? ` 등 총 ${ds.length}개 부서` : ''}`,
+          `(만족도) 응답 ${rs.filter(x => x.sat >= 0).length}건 · 불만 이하 ${rs.filter(x => x.sat >= 3).length}건`]));
+      });
+      if (rep.length) apx.push(it(`다빈도 민원인 전체 목록 (${REP_MIN}건 이상 접수, ${F(rep.length)}명)`, [['순위', '민원인', '접수', '주요 세부현안', '주 처리부서', '접수 기간', '평균 처리', '불만족'],
+        ...rep.map(([pid, rs], i) => { const o = rs.slice().sort((a, b) => a.mi - b.mi || a.day - b.day), ad = avgD(rs), b = rs.filter(x => x.sat >= 3).length; return [i + 1, pidLabel(pid), `${rs.length}건`, cnt(rs, x => SUBS[x.s].n).slice(0, 2).map(x => x[0]).join(', '), cnt(rs, x => x.dept)[0][0], `${dt(o[0])}~${dt(o[o.length - 1])}`, ad == null ? '—' : `${ad.toFixed(1)}일`, b ? `${b}건` : '—']; })],
+        [1, 2, 1, 3, 2, 3, 2, 1], '다빈도 민원인 목록 (접수 건수 많은 순)'));
+    }
+    if (det.length) secs.push({ title: 'Ⅳ. 세부 분석 결과', items: det });
+    if (inc.sum) secs.push({ title: 'Ⅴ. 분석 결과 종합', items: [it('', null, null, '', [
+      `(민원 규모) 총 ${F(T)}건${ch !== null ? `(${c.name} 대비 ${ch >= 0 ? '+' : ''}${ch.toFixed(1)}%)` : ''}, ${bk[0][0]} 최대 ${F(bk[0][1])}건 발생`,
+      `(접수경로·지역) ${chG[0][0]} ${P(chG[0][1], T)}%, 주소 기재 민원 중 ${sido[0] ? `${sido[0][0]} ${P(sido[0][1], A.addr)}%` : '—'}`,
+      `(현안) ${hy.slice(0, 3).map(h => `${h[0]} ${P(h[1], T)}%`).join(', ')} 순, 세부현안은 ${subs.slice(0, 3).map(s => s[0]).join(', ')} 순`,
+      `(부서별) 상위 4개 부서(${top4.map(d => d[0]).join(', ')})가 전체 민원의 ${P(top4N, T)}% 처리`,
+      `(처리기간) 평균 ${A.avgDays.toFixed(2)}일, 개별 민원 최장 ${A.longest[0] ? A.longest[0].days.toFixed(1) : '—'}일`,
+      `(만족도) 응답률 ${P(A.satN, T)}%, 평균 ${sAll == null ? '—' : sAll.toFixed(2)}점, 만족 이상 ${P(satUp, A.satN)}% · 불만 이하 ${P(satDn, A.satN)}%`,
+      `(다빈도 민원인) ${F(PL.length)}명 중 ${F(rep.length)}명(${P(rep.length, PN)}%)이 전체 민원의 ${P(repRecs.length, T)}% 접수`
+    ])] });
+    if (apx.length) secs.push({ title: '붙임', items: apx });
+    secs.forEach(s => s.items.forEach(x => {
+      x.hasHead = !!x.head; x.hasTbl = !!x.tbl; x.hasCap = !!(x.tbl && x.cap);
+      if (x.tbl) { const tw = sum(x.tbl.widths); x.cols = x.tbl.widths.map(w => `${(w / tw * 100).toFixed(2)}fr`).join(' ');
+        x.cells = x.tbl.rows.flatMap((row, ri) => row.map(v => { const s = String(v ?? ''); return { v: s, bg: ri === 0 ? '#eef2f7' : row[0] === '합계' || row[1] === '합계' || row[0] === '응답 합계' ? '#f8f9fb' : '#fff', fw: ri === 0 ? 700 : 400, al: ri > 0 && /^[\d,.+\-%~일건명 ]+$|^—$|^신규$/.test(s) ? 'right' : ri === 0 ? 'center' : 'left' }; }));
+        x.tbl.rows = x.tbl.rows.map(row => row.map(v => String(v ?? ''))); }
+    }));
+    return { title: `${pn.name} ${office} 민원처리 데이터 분석 결과`, created: r.created, sections: secs };
+  }
+  previewOld(r) {
+    const oi = this.officeIdx(), [office, home] = OFFICES[oi], A = agg(oi, this.cov(oi), r.from, r.to), c = this.compare(oi, r.from, r.to, r.cmp), pn = periodName(r.from, r.to), T = A.total;
     const len = r.to - r.from + 1, inc = r.inc, secs = [];
     const bk = A.bs.list.map((l, i) => [l, A.bucket[i]]).sort((a, b) => b[1] - a[1]);
     const chG = desc(A.chG), sido = desc(A.sido), hy = HYUN.map((h, i) => [h[0], A.hyun[i]]).sort((a, b) => b[1] - a[1]);
@@ -1875,14 +2021,22 @@ class Component extends DCLogic {
         };
       })(),
       ...(() => {
-        const rp = this.state.rp; if (!rp) return { rpOn: false, rpItems: [], closeRp: () => {} };
+        const rp = this.state.rp; if (!rp) return { rpOn: false, rpItems: [], closeRp: () => {}, dlRp: () => {} };
         const list = rp.recs.slice().sort((a, b) => b.mi - a.mi || b.day - a.day), shown = list.slice(0, 30), kw = rp.kw;
         const rel = (rp.rel || []).filter(w => w && w !== kw), terms = [kw, ...rel].filter(Boolean).sort((a, b) => b.length - a.length);
         const esc = w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), re = terms.length ? new RegExp(`(${terms.map(esc).join('|')})`, 'g') : null;
         const segsOf = t => { if (!re) return [{ t, bg: 'transparent', fw: 400 }]; return t.split(re).filter(p => p).map(p => p === kw ? { t: p, bg: '#fff1b8', fw: 700 } : rel.includes(p) ? { t: p, bg: '#d6e8fb', fw: 700 } : { t: p, bg: 'transparent', fw: 400 }); };
         return {
           rpOn: true, rpHasRel: rel.length > 0, rpKw: kw, rpRel: rel.join(', '), rpTitle: rp.title, rpSub: `${rp.sub ? rp.sub + ' · ' : ''}${fmt(list.length)}건 · 최근 접수 순`,
-          rpMore: list.length > shown.length, rpMoreTxt: `최근 ${shown.length}건만 표시했습니다. 나머지 ${fmt(list.length - shown.length)}건은 Word 보고서에 들어갑니다.`,
+          rpMore: list.length > shown.length, rpMoreTxt: `최근 ${shown.length}건만 표시했습니다. 전체 ${fmt(list.length)}건은 상단 Excel 버튼으로 내려받을 수 있습니다.`,
+          dlRp: () => {
+            if (!window.XLSX) return;
+            const head = ['신청번호', '신청일', '신청경로', '현안', '세부현안', '제목', '본문', '처리부서', '처리기간', '만족도'];
+            const rows = list.map(r => [recId(r), `${MONTHS[r.mi].label}.${String(r.day).padStart(2, '0')}`, CH[r.ch][1], HYUN[SUBS[r.s].h][0], SUBS[r.s].n, recTitle(r), recBody(r), r.dept, r.done ? dayFmt(r.days) : '처리 중', r.sat >= 0 ? SAT[r.sat] : '무응답']);
+            const ws = window.XLSX.utils.aoa_to_sheet([head, ...rows]); ws['!cols'] = [14, 11, 18, 12, 14, 36, 80, 14, 9, 9].map(w => ({ wch: w }));
+            const wb = window.XLSX.utils.book_new(); window.XLSX.utils.book_append_sheet(wb, ws, '민원 목록');
+            window.XLSX.writeFile(wb, `${rp.title}`.replace(/[\\/:*?"<>|\s·]+/g, '_') + '_민원목록.xlsx');
+          },
           closeRp: () => this.setState({ rp: null }),
           rpItems: shown.map(r => ({ id: recId(r), date: `${MONTHS[r.mi].label}.${String(r.day).padStart(2, '0')}`, ch: CH[r.ch][1], hyun: HYUN[SUBS[r.s].h][0], sub: SUBS[r.s].n, title: recTitle(r), segs: segsOf(recBody(r)), ...(() => { const id = recId(r), long = recBody(r).length > 200, ex = !!(this.state.rpEx || {})[id]; return { long, clamp: long && !ex, full: !long || ex, exLabel: ex ? '접기 ▲' : '전체 보기 ▼', exToggle: () => this.setState(s => ({ rpEx: { ...(s.rpEx || {}), [id]: !ex } })) }; })(), dept: r.dept || '미기재', days: r.done ? dayFmt(r.days) : '처리 중', dColor: r.done && r.days >= 10 ? RED : '#1e2124', sat: r.sat >= 0 ? SAT[r.sat] : '무응답', sColor: r.sat >= 3 ? RED : r.sat >= 0 && r.sat <= 1 ? NAVY : '#464c53' }))
         };
@@ -2148,7 +2302,7 @@ class Component extends DCLogic {
       dlReport: async () => {
         const m = await import('./docx.js');
         const blocks = [{ t: 'title', text: pv.title }, { t: 'meta', text: `${office} · 작성 ${pv.created || ''} · 민원 분석 보고서 생성 서비스` }];
-        (pv.sections || []).forEach(s => { blocks.push({ t: 'h', text: s.title }); (s.items || []).forEach(it => { if (it.head) blocks.push({ t: 'sub', text: it.head }); (it.lines || []).forEach(l => blocks.push({ t: 'li', text: l })); }); });
+        (pv.sections || []).forEach(s => { blocks.push({ t: 'h', text: s.title }); (s.items || []).forEach(it => { if (it.head) blocks.push({ t: 'sub', text: it.head }); if (it.tbl) { blocks.push({ t: 'table', rows: it.tbl.rows, widths: it.tbl.widths.map(w => Math.round(w / it.tbl.widths.reduce((a, b) => a + b, 0) * 9000)) }); if (it.cap) blocks.push({ t: 'cap', text: `<${it.cap}>` }); } (it.lines || []).forEach(l => blocks.push({ t: 'li', text: l })); }); });
         m.save(m.docx(blocks), `${pv.title.replace(/[\\/:*?"<>|]/g, '_')}.docx`, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
       },
       pv
