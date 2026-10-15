@@ -336,11 +336,11 @@ button:disabled{opacity:0.4;cursor:not-allowed}
   <div style="padding:12px 18px;display:flex;align-items:center;gap:10px 20px;flex-wrap:wrap;">
       <div style="display:flex;align-items:center;gap:6px;">
         <span style="font-size:14px;font-weight:700;color:#1e2124;margin-right:4px;">기간</span>
-        <select value="{{ fromY }}" onChange="{{ onFromY }}" aria-label="시작 연도" style="min-width:92px;height:34px;border:1px solid #b1b8be;border-radius:2px;padding:0 10px;background:#fff;color:#063a74;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;"><sc-for list="{{ yearOpts }}" as="y" hint-placeholder-count="2"><option value="{{ y.value }}">{{ y.label }}</option></sc-for></select>
-        <select value="{{ fromM }}" onChange="{{ onFromM }}" aria-label="시작 월" style="min-width:76px;height:34px;border:1px solid #b1b8be;border-radius:2px;padding:0 10px;background:#fff;color:#063a74;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;"><sc-for list="{{ fromMOpts }}" as="m" hint-placeholder-count="12"><option value="{{ m.value }}" disabled="{{ m.off }}">{{ m.label }}</option></sc-for></select>
+        <select key="{{ selKeyFY }}" value="{{ fromY }}" onChange="{{ onFromY }}" aria-label="시작 연도" style="min-width:92px;height:34px;border:1px solid #b1b8be;border-radius:2px;padding:0 10px;background:#fff;color:#063a74;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;"><sc-for list="{{ yearOpts }}" as="y" hint-placeholder-count="2"><option value="{{ y.value }}">{{ y.label }}</option></sc-for></select>
+        <select key="{{ selKeyFM }}" value="{{ fromM }}" onChange="{{ onFromM }}" aria-label="시작 월" style="min-width:76px;height:34px;border:1px solid #b1b8be;border-radius:2px;padding:0 10px;background:#fff;color:#063a74;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;"><sc-for list="{{ fromMOpts }}" as="m" hint-placeholder-count="12"><option value="{{ m.value }}" disabled="{{ m.off }}">{{ m.label }}</option></sc-for></select>
         <span style="padding:0 4px;color:#464c53;">~</span>
-        <select value="{{ toY }}" onChange="{{ onToY }}" aria-label="종료 연도" style="min-width:92px;height:34px;border:1px solid #b1b8be;border-radius:2px;padding:0 10px;background:#fff;color:#063a74;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;"><sc-for list="{{ yearOpts }}" as="y" hint-placeholder-count="2"><option value="{{ y.value }}">{{ y.label }}</option></sc-for></select>
-        <select value="{{ toM }}" onChange="{{ onToM }}" aria-label="종료 월" style="min-width:76px;height:34px;border:1px solid #b1b8be;border-radius:2px;padding:0 10px;background:#fff;color:#063a74;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;"><sc-for list="{{ toMOpts }}" as="m" hint-placeholder-count="12"><option value="{{ m.value }}" disabled="{{ m.off }}">{{ m.label }}</option></sc-for></select>
+        <select key="{{ selKeyTY }}" value="{{ toY }}" onChange="{{ onToY }}" aria-label="종료 연도" style="min-width:92px;height:34px;border:1px solid #b1b8be;border-radius:2px;padding:0 10px;background:#fff;color:#063a74;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;"><sc-for list="{{ yearOpts }}" as="y" hint-placeholder-count="2"><option value="{{ y.value }}">{{ y.label }}</option></sc-for></select>
+        <select key="{{ selKeyTM }}" value="{{ toM }}" onChange="{{ onToM }}" aria-label="종료 월" style="min-width:76px;height:34px;border:1px solid #b1b8be;border-radius:2px;padding:0 10px;background:#fff;color:#063a74;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;"><sc-for list="{{ toMOpts }}" as="m" hint-placeholder-count="12"><option value="{{ m.value }}" disabled="{{ m.off }}">{{ m.label }}</option></sc-for></select>
       </div>
     <span style="font-size:13.5px;color:#464c53;">{{ periodRange }}</span>
     <sc-if value="{{ isDept }}" hint-placeholder-val="{{ false }}">
@@ -471,9 +471,9 @@ button:disabled{opacity:0.4;cursor:not-allowed}
         </div>
       </sc-for>
     </div>
-    <div style="padding:10px 18px;background:#f4f5f6;border-bottom:1px solid #cdd1d5;display:grid;grid-template-columns:92px minmax(0,1fr) 110px 84px 84px 84px 84px;gap:10px;font-size:12.5px;font-weight:700;color:#464c53;"><span>신청일</span><span>제목 · 요약</span><span>세부현안</span><span style="text-align:center;">처리기간</span><span style="text-align:center;">만족도</span><span style="text-align:center;">추가답변</span><span style="text-align:center;">민원인 접수</span></div>
+    <div style="padding:6px 18px;background:#f4f5f6;border-bottom:1px solid #cdd1d5;display:grid;grid-template-columns:92px minmax(0,1fr) 110px repeat(4,84px);gap:12px;font-size:12.5px;font-weight:700;color:#464c53;"><span>신청일</span><span>제목 · 요약</span><span>세부현안</span><span style="text-align:center;">처리기간</span><span style="text-align:center;">만족도</span><span style="text-align:center;">추가답변</span><span style="text-align:center;">민원인 접수</span></div>
     <sc-for list="{{ dv.us.cases }}" as="u" hint-placeholder-count="5">
-      <div onClick="{{ u.go }}" style-hover="background:#f4f6f9" title="눌러서 원문 보기" style="cursor:pointer;padding:12px 18px;border-bottom:1px solid #eef0f2;display:grid;grid-template-columns:92px minmax(0,1fr) 110px 84px 84px 84px 84px;gap:10px;align-items:center;font-size:13px;">
+      <div onClick="{{ u.go }}" style-hover="background:#f4f6f9" title="눌러서 원문 보기" style="cursor:pointer;padding:8px 18px;border-bottom:1px solid #eef0f2;display:grid;grid-template-columns:92px minmax(0,1fr) 110px repeat(4,84px);gap:12px;align-items:center;font-size:13px;">
         <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#464c53;">{{ u.date }}</span>
         <span style="display:flex;flex-direction:column;min-width:0;"><b style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ u.title }}</b><span style="font-size:12px;color:#464c53;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ u.summary }}</span></span>
         <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#464c53;">{{ u.sub }}</span>
@@ -511,7 +511,7 @@ button:disabled{opacity:0.4;cursor:not-allowed}
       <sc-if value="{{ regionOk }}" hint-placeholder-val="{{ true }}">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));border-bottom:1px solid #cdd1d5;">
           <div style="position:relative;min-height:520px;border-right:1px solid #e6e8ea;">
-            <iframe ref="{{ mapRef }}" src="region-map.html?v=2" title="{{ rdMapTitle }}" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block;"></iframe>
+            <iframe ref="{{ mapRef }}" src="region-map.html" title="{{ rdMapTitle }}" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block;"></iframe>
             <div style="position:absolute;left:12px;bottom:10px;display:flex;align-items:center;gap:6px;font-size:11.5px;color:#464c53;pointer-events:none;background:rgba(255,255,255,0.85);padding:3px 6px;"><span>적음</span><span style="width:72px;height:8px;background:linear-gradient(90deg,#dfe6ef,#063a74);display:block;"></span><span>많음</span></div>
           </div>
           <div style="display:flex;flex-direction:column;min-width:0;">
@@ -600,20 +600,20 @@ button:disabled{opacity:0.4;cursor:not-allowed}
     </section>
 <section style="background:#fff;border:1px solid #cdd1d5;display:flex;flex-direction:column;">
       <div style="padding:12px 18px;border-bottom:1px solid #cdd1d5;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
-        <h3 style="margin:0;font-family:inherit;font-size:15.5px;font-weight:700;color:#063a74;letter-spacing:0;">다빈도 민원인 불만족률</h3>
+        <h3 style="margin:0;font-family:inherit;font-size:15.5px;font-weight:700;color:#063a74;letter-spacing:0;">다빈도 민원인 만족도</h3>
         <span style="margin-left:auto;font-size:13px;color:#464c53;">{{ xsCaption }}</span>
       <button data-noexport="1" data-xl="xs" onClick="{{ dlXl }}" title="엑셀(xlsx)로 내려받기" aria-label="엑셀로 내려받기" style="align-self:center;flex:none;height:22px;line-height:1;display:flex;align-items:center;gap:4px;padding:0 8px;border:1px solid #b1b8be;border-radius:2px;background:#fff;color:#464c53;font-size:12px;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;border-color:#1c589c;color:#063a74;" style-active="background:#dfe6ef;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>Excel</button></div>
       <sc-if value="{{ xsFew }}" hint-placeholder-val="{{ false }}"><div style="margin:14px 18px 0;padding:10px 12px;border:1px dashed #9e6a00;background:#fff4e5;color:#7a5200;font-size:13px;line-height:1.6;">{{ xsFewMsg }}</div></sc-if>
       <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #cdd1d5;">
         <div style="padding:10px 18px;display:flex;flex-direction:column;gap:2px;border-right:1px solid #e6e8ea;">
-          <span style="font-size:13px;font-weight:700;color:#464c53;">다빈도 민원인 불만족률</span>
-          <span style="font-size:20px;font-weight:700;line-height:1.15;color:{{ xsRepC }};">{{ xsRep }}</span>
-          <span style="font-size:12.5px;color:#6d7882;">{{ xsRepSub }}</span>
+          <span style="font-size:13px;font-weight:700;color:#464c53;">다빈도 민원인 만족도</span>
+          <span style="font-size:20px;font-weight:700;line-height:1.15;">{{ xsGood }}</span>
+          <span style="font-size:12.5px;color:#6d7882;">{{ xsGoodSub }}</span>
         </div>
         <div style="padding:10px 18px;display:flex;flex-direction:column;gap:2px;">
-          <span style="font-size:13px;font-weight:700;color:#464c53;">그 외(1~2건) 민원인 불만족률</span>
-          <span style="font-size:20px;font-weight:700;line-height:1.15;">{{ xsOne }}</span>
-          <span style="font-size:12.5px;color:#6d7882;">{{ xsOneSub }}</span>
+          <span style="font-size:13px;font-weight:700;color:#464c53;">전체 민원 만족도</span>
+          <span style="font-size:20px;font-weight:700;line-height:1.15;">{{ xsAll }}</span>
+          <span style="font-size:12.5px;color:#6d7882;">{{ xsAllSub }}</span>
         </div>
       </div>
       <div style="padding:12px 18px 6px;display:flex;flex-direction:column;gap:2px;">
@@ -763,7 +763,6 @@ button:disabled{opacity:0.4;cursor:not-allowed}
     </section>
 
   </div>
-
   <section style="background:#fff;border:1px solid #cdd1d5;display:flex;flex-direction:column;flex:1;">
       <div style="padding:12px 18px;border-bottom:1px solid #cdd1d5;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
         <h3 style="margin:0;font-family:inherit;font-size:15.5px;font-weight:700;color:#063a74;letter-spacing:0;">{{ trendUnit }} 민원 건수 추이</h3>
@@ -1582,7 +1581,7 @@ class Component extends DCLogic {
       person: [['구분', '민원인 비율(%)'], L(v.personLegend).map(l => [l.name, l.pct]).concat([[], ['2건 이상 접수 건수', '민원인 수', '비중(%)']], L(v.repBars).map(b => [b.name, b.pct, b.share]))],
       region: [['순위', '지역', '비율(%)', '비고'], L(v.regionRows).map(r => [r.rank, r.name, r.pct, r.sub])],
       prows: [['민원인', '접수', '주요 세부현안', '접수 기간', '불만족', '평균 처리'], L(v.pRows).map(p => [p.id, p.n, [p.top, p.topMore].filter(Boolean).join(' '), p.span, p.bad, p.avg])],
-      xs: [['구분', '불만족률', '기준'], [['다빈도 민원인', v.xsRep, v.xsRepSub], ['그 외(1~2건) 민원인', v.xsOne, v.xsOneSub], [], ['민원인', '세부현안', '접수', '불만족'], ...L(v.xsList).map(b => [b.id, b.subs, b.n, b.bad])]],
+      xs: [['구분', '만족도(5점 만점)', '기준'], [['다빈도 민원인', v.xsGood, v.xsGoodSub], ['전체 민원', v.xsAll, v.xsAllSub], [], ['민원인', '세부현안', '접수', '불만족'], ...L(v.xsList).map(b => [b.id, b.subs, b.n, b.bad])]],
       rank: [['순위', '세부현안', '현안', '건수', '비율(%)', '전년 동기 대비'], L(v.rankRows).map(r => [r.rank, r.name, r.hyun, r.n, r.p, r.yTitle ? `${r.yoy} (${r.yTitle})` : ''])],
       channel: [['신청경로', '비율(%)'], L(v.donutLegend).map(l => [l.name, l.pct])],
       sat: [['만족도', '건수', '비율(%)'], L(v.satLegend).map(l => [l.name, l.cnt, l.pct])],
@@ -1761,7 +1760,7 @@ class Component extends DCLogic {
         const setR = (a, b) => this.setState({ unit: 'custom', from: a, to: b });
         const ymSel = {
           yearOpts: years.slice().reverse().map(y => ({ value: y, label: `${y}년` })),
-          fromY: fm.y, fromM: fm.cm, toY: tm.y, toM: tm.cm, fromMOpts: mList(fm.y), toMOpts: mList(tm.y),
+          fromY: fm.y, fromM: fm.cm, toY: tm.y, toM: tm.cm, selKeyFY: `fy${this.officeIdx()}-${from}-${to}`, selKeyFM: `fm${this.officeIdx()}-${from}-${to}`, selKeyTY: `ty${this.officeIdx()}-${from}-${to}`, selKeyTM: `tm${this.officeIdx()}-${from}-${to}`, fromMOpts: mList(fm.y), toMOpts: mList(tm.y),
           onFromY: e => { const y = Number(e.target.value), k0 = idxOf(y, fm.cm), k = okK(k0) ? k0 : firstIn(y); setR(k, Math.max(to, k)); },
           onFromM: e => { const k = idxOf(fm.y, Number(e.target.value)); setR(k, Math.max(to, k)); },
           onToY: e => { const y = Number(e.target.value), k0 = idxOf(y, tm.cm), k = okK(k0) ? k0 : lastIn(y); setR(Math.min(from, k), k); },
@@ -2086,10 +2085,15 @@ class Component extends DCLogic {
           xCols: cS.map(si => ({ name: SUBS[si].n })),
           xRows: rD.map(d => ({ name: d, total: fmt(dC[d]), cells: cS.map(si => { const v = cell[d + '|' + si] || 0, a = v / cmx; return { v: v ? fmt(v) : '·', bg: v ? `rgba(6,58,116,${(0.07 + a * 0.8).toFixed(2)})` : '#f8f9fb', fg: a > 0.45 ? '#fff' : v ? '#1e2124' : '#b1b8be', cur: v ? 'pointer' : 'default', title: `${d} · ${SUBS[si].n} ${v}건`, go: () => { if (v) this.openRecs(`${d} · ${SUBS[si].n}`, '지역 × 세부현안', hr.filter(r => r.dong === d && r.s === si)); } }; }) })),
           xNote: xTop ? `가장 많이 겹친 조합: ${xTop[0].split('|')[0]} · ${SUBS[+xTop[0].split('|')[1]].n} ${fmt(xTop[1])}건 · 칸을 누르면 원문` : '',
-          xsCaption: `만족도 응답 ${fmt(resp.length)}건 기준`,
+          xsCaption: `매우만족 5점 ~ 매우불만 1점`,
           xsFew: few, xsFewMsg: `다빈도 민원인의 만족도 응답이 ${fmt(rR.length)}건뿐이라 비율은 참고용입니다.`,
-          xsRep: rb == null ? '—' : `${rb.toFixed(1)}%`, xsRepSub: `응답 ${fmt(rR.length)}건 중 불만족 ${fmt(rR.filter(r => r.sat >= 3).length)}건`, xsRepC: rb != null && sb != null && !few && rb > sb + 5 ? RED : '#1e2124',
-          xsOne: sb == null ? '—' : `${sb.toFixed(1)}%`, xsOneSub: `응답 ${fmt(sR.length)}건 중 불만족 ${fmt(sR.filter(r => r.sat >= 3).length)}건`,
+          xsRep: rb == null ? '—' : `${rb.toFixed(1)}%`, xsRepSub: `응답 ${fmt(rR.length)}건 기준`, xsRepC: rb != null && sb != null && !few && rb > sb + 5 ? RED : '#1e2124',
+          xsGoodSub: `다빈도 민원인 응답 ${fmt(rR.length)}건 평균`,
+          xsAll: resp.length ? `${(resp.reduce((s, r) => s + 5 - r.sat, 0) / resp.length).toFixed(2)} / 5점` : '—',
+          xsAllSub: `전체 응답 ${fmt(resp.length)}건 평균`,
+          xsGood: rR.length ? `${(rR.reduce((s, r) => s + 5 - r.sat, 0) / rR.length).toFixed(2)} / 5점` : '—',
+          xsOld: rR.length ? `${(rR.filter(r => r.sat <= 1).length / rR.length * 100).toFixed(1)}%` : '—',
+          xsSegs: [4, 3, 2, 1, 0].map(i => { const c = rR.filter(r => r.sat === i).length, w = rR.length ? c / rR.length * 100 : 0; return { name: SAT[i], cnt: fmt(c), pct: w.toFixed(1), w, bg: ['#063a74', '#8fb0d6', '#cdd1d5', '#f3b3a4', '#de3412'][i], fg: i === 0 || i === 4 ? '#fff' : '#1e2124', lbl: w > 9 ? `${w.toFixed(0)}%` : '', title: `${SAT[i]} ${fmt(c)}건` }; }),
           xsNoList: !badP.length, xsListCap: `${fmt(badPN)}명 · 불만족 건수 많은 순`,
           xsList: badP.map(([pid, rs, b], i) => ({ bd: i < badP.length - 1 ? '#eef0f2' : 'transparent', id: pidLabel(pid), subs: subsOf(rs).slice(0, 3).map(si => SUBS[si].n).join(', '), n: `${rs.length}건`, bad: `${b}건`, go: () => this.openRecs(`${pidLabel(pid)} 불만족 민원`, '다빈도 민원인 · 불만족', rs.filter(r => r.sat >= 3)) }))
         };
