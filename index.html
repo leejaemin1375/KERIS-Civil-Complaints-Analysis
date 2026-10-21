@@ -2298,8 +2298,8 @@ class Component extends DCLogic {
           const o = ord(rs), ts = subsOf(rs), bad = rs.filter(r => r.sat >= 3).length, dn = rs.filter(r => r.done), ad = dn.length ? sum(dn.map(r => r.days)) / dn.length : null, isOpen = openP === pid, lb = pidLabel(pid);
           return { id: lb, n: `${rs.length}건`, top: SUBS[ts[0]].n, topMore: ts.length > 1 ? `외 ${ts.length - 1}개` : '', span: `${dt(o[0])} ~ ${dt(o[o.length - 1])}`, bad: bad ? `${bad}건` : '—', badC: bad ? RED : '#6d7882', avg: ad == null || limDays ? '—' : `${ad.toFixed(1)}일`, mark: isOpen ? '−' : '+', bg: isOpen ? '#eef2f7' : '#fff', open: isOpen,
             toggle: () => this.setState({ openPerson: isOpen ? null : pid }),
-            all: () => this.openRecs(`${lb} 접수 이력`, '민원인 접수 이력', rs), histCap: `접수 ${rs.length}건 · 오래된 순`,
-            hist: isOpen ? o.map(r => ({ date: dt(r), sub: SUBS[r.s].n, title: recTitle(r), days: r.done ? dayFmt(r.days) : '처리 중', sat: r.sat >= 0 ? SAT[r.sat] : '무응답', sC: r.sat >= 3 ? RED : r.sat >= 0 && r.sat <= 1 ? NAVY : '#6d7882', go: () => this.openRecs(recTitle(r), lb, [r]) })) : [] };
+            all: () => this.openRecs(`${lb} 접수 이력`, '민원인 접수 이력', rs), histCap: `접수 ${rs.length}건 · 최신순`,
+            hist: isOpen ? o.slice().reverse().map(r => ({ date: dt(r), sub: SUBS[r.s].n, title: recTitle(r), days: r.done ? dayFmt(r.days) : '처리 중', sat: r.sat >= 0 ? SAT[r.sat] : '무응답', sC: r.sat >= 3 ? RED : r.sat >= 0 && r.sat <= 1 ? NAVY : '#6d7882', go: () => this.openRecs(recTitle(r), lb, [r]) })) : [] };
         });
         const pRows = pRowsAll.slice(0, LIM);
         const hr = A.recs.filter(r => r.dong), dC = {}, sC = {}, cell = {};
