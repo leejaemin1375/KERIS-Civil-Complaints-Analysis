@@ -32,6 +32,7 @@ export function docx(blocks) {
     if (b.t === 'meta') return para(b.text, { sz: 18, color: '464C53', after: 240 });
     if (b.t === 'h') return para(b.text, { b: true, sz: 26, color: '063A74', before: 240, after: 120 });
     if (b.t === 'sub') return para(b.text, { b: true, sz: 21, before: 80, after: 60 });
+    if (b.t === 'cap') return para(b.text, { sz: 18, color: '464C53', center: true, after: 160 });
     if (b.t === 'li') return para(`- ${b.text}`, { ind: 360, after: 60 });
     if (b.t === 'table') return table(b.rows, b.widths || b.rows[0].map(() => Math.floor(9000 / b.rows[0].length)));
     return para(b.text);

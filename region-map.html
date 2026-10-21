@@ -11,18 +11,21 @@ text{font-size:11px;fill:#1e2124;pointer-events:none;paint-order:stroke;stroke:#
 #msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#6d7882}
 #tip{position:absolute;pointer-events:none;background:#fff;border:1px solid #cdd1d5;padding:4px 8px;font-size:12px;display:none;white-space:nowrap}
 </style></head><body>
-<svg id="m"></svg><div id="msg">지도 불러오는 중…</div><div id="tip"></div><div style="position:absolute;right:6px;bottom:4px;font-size:9.5px;color:#8a949e;">경계: 통계청 SGIS · vuski/admdongkor (CC BY 4.0)</div>
+<svg id="m"></svg><div id="msg">지도 불러오는 중…</div><div id="tip"></div><div style="position:absolute;right:6px;bottom:4px;font-size:9.5px;color:#8a949e;">경계: 행정구역 읍면동 경계 자료</div>
 <script>
-let geo=null,counts={},sel='',region='',paths=null,labels=null;const cache={};
+let geo=null,counts={},sel='',key='';const cache={};
 const nm=f=>f.properties.name;
+const J=u=>cache[u]||(cache[u]=fetch(u).then(r=>{if(!r.ok)throw new Error(u);return r.json();}).then(fix));
+const fix=g=>{g.features.forEach(f=>{const gm=f.geometry;if(!gm)return;const polys=gm.type==='Polygon'?[gm.coordinates]:gm.type==='MultiPolygon'?gm.coordinates:[];polys.forEach(p=>{if(d3.geoArea({type:'Polygon',coordinates:p})>2*Math.PI)p.forEach(r=>r.reverse());});});return g;};
 const send=m=>parent.postMessage(Object.assign({src:'sejong-map'},m),'*');
 function draw(){
   if(!geo)return;
   const svg=d3.select('#m'),W=innerWidth,H=innerHeight;svg.attr('viewBox',`0 0 ${W} ${H}`).selectAll('*').remove();
-  const pr=d3.geoMercator().fitExtent([[8,8],[W-8,H-8]],geo),pa=d3.geoPath(pr);
+  const top0=Math.max(8,Math.min(48,H*0.08));
+  const pr=d3.geoMercator().fitExtent([[8,top0],[W-8,H-8]],geo),pa=d3.geoPath(pr);
   const mx=Math.max(1,...Object.values(counts));
   const col=n=>n?d3.interpolateRgb('#dfe6ef','#063a74')(Math.pow(n/mx,.7)):'#f4f5f6';
-  paths=svg.append('g').selectAll('path').data(geo.features).join('path').attr('class',f=>'d'+(nm(f)===sel?' sel':'')).attr('d',pa).attr('fill',f=>col(counts[nm(f)]||0))
+  svg.append('g').selectAll('path').data(geo.features).join('path').attr('class',f=>'d'+(nm(f)===sel?' sel':'')).attr('d',pa).attr('fill',f=>col(counts[nm(f)]||0))
     .on('click',(e,f)=>send({type:'pick',dong:nm(f)}))
     .on('mousemove',(e,f)=>{const t=document.getElementById('tip');t.style.display='block';t.textContent=`${nm(f)} ${(counts[nm(f)]||0).toLocaleString()}건`;t.style.left=Math.min(e.clientX+12,W-120)+'px';t.style.top=(e.clientY+12)+'px';})
     .on('mouseleave',()=>{document.getElementById('tip').style.display='none';});
@@ -31,10 +34,18 @@ function draw(){
     .attr('x',f=>pa.centroid(f)[0]).attr('y',f=>pa.centroid(f)[1]).attr('text-anchor','middle').attr('dy','.35em')
     .style('font-weight',f=>nm(f)===sel?700:400).text(nm);
   svg.selectAll('path.sel').raise();
-  send({type:'names',names:geo.features.map(nm)});
 }
-function load(r){region=r;const msg=document.getElementById('msg');if(cache[r]){geo=cache[r];msg.style.display='none';draw();return;}geo=null;d3.select('#m').selectAll('*').remove();msg.style.display='flex';msg.textContent='지도 불러오는 중…';fetch('geo/'+r+'.json?v=2').then(x=>x.json()).then(j=>{cache[r]=j;if(region!==r)return;geo=j;msg.style.display='none';draw();}).catch(()=>{msg.textContent='지도 경계 자료를 불러오지 못했습니다';});}
-addEventListener('message',e=>{const d=e.data;if(!d||d.src!=='dash')return;counts=d.counts||{};sel=d.sel||'';if(d.region&&d.region!==region)load(d.region);else draw();});
+function load(sido,unit){
+  const k=sido+'|'+(unit||'');key=k;geo=null;const msg=document.getElementById('msg');
+  d3.select('#m').selectAll('*').remove();msg.style.display='flex';msg.textContent='지도 불러오는 중…';
+  J('geo/sgg/'+sido+'.json').then(g=>{
+    if(!unit)return g;
+    const f=g.features.find(x=>nm(x)===unit);if(!f)throw new Error('unit');
+    return Promise.all(f.properties.sgg.map(c=>J('geo/emd/'+c+'.json'))).then(a=>({type:'FeatureCollection',features:a.flatMap(x=>x.features)}));
+  }).then(g=>{if(key!==k)return;geo=g;msg.style.display='none';draw();send({type:'names',key:k,names:[...new Set(g.features.map(nm))]});})
+    .catch(()=>{if(key===k)msg.textContent='지도 경계 자료를 불러오지 못했습니다';});
+}
+addEventListener('message',e=>{const d=e.data;if(!d||d.src!=='dash')return;counts=d.counts||{};sel=d.sel||'';const k=(d.sido||'36')+'|'+(d.unit||'');if(k!==key)load(d.sido||'36',d.unit||'');else draw();});
 addEventListener('resize',draw);
 send({type:'ready'});
 </script></body></html>
