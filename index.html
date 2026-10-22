@@ -352,9 +352,6 @@ button:disabled{opacity:0.4;cursor:not-allowed}
     </sc-if>
     <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;">
       <button onClick="{{ dlTab }}" title="{{ dlTabTitle }}" aria-label="{{ dlTabTitle }}" style="height:36px;border:1px solid #063a74;border-radius:2px;background:#fff;color:#063a74;padding:0 12px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;" style-hover="background:#eef2f7" style-active="background:#dfe6ef"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>전체 데이터</button>
-      <sc-if value="{{ showDashHead }}" hint-placeholder-val="{{ false }}">
-        <button onClick="{{ openRpt }}" style="height:36px;border:0;border-radius:2px;background:#063a74;color:#fff;padding:0 16px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;" style-hover="background:#1c589c">보고서 내려받기</button>
-      </sc-if>
 
     </div>
   </div>
@@ -382,7 +379,7 @@ button:disabled{opacity:0.4;cursor:not-allowed}
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,560px),1fr));gap:20px;align-items:stretch;">
   <section style="background:#fff;border:1px solid #cdd1d5;display:flex;flex-direction:column;">
     <div style="padding:12px 18px;border-bottom:1px solid #cdd1d5;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
-      <h3 style="margin:0;font-family:inherit;font-size:15.5px;font-weight:700;color:#063a74;letter-spacing:0;">세부현안별 민원 현황</h3>
+      <div style="display:flex;align-items:center;gap:8px;min-width:0;"><sc-if value="{{ dv.deptOn }}" hint-placeholder-val="{{ false }}"><span style="flex:none;height:24px;box-sizing:border-box;display:flex;align-items:center;padding:0 9px;background:#1c589c;border:1px solid #1c589c;color:#fff;font-size:13px;font-weight:700;border-radius:2px;white-space:nowrap;">{{ dv.dn }}</span></sc-if><sc-if value="{{ dv.deptAll }}" hint-placeholder-val="{{ true }}"><span style="flex:none;height:24px;box-sizing:border-box;display:flex;align-items:center;padding:0 9px;background:#1c589c;border:1px solid #1c589c;color:#fff;font-size:13px;font-weight:700;border-radius:2px;white-space:nowrap;">전체 부서</span></sc-if><h3 style="margin:0;font-family:inherit;font-size:15.5px;font-weight:700;color:#063a74;letter-spacing:0;">주요 세부현안</h3></div>
       <span style="margin-left:auto;font-size:13px;color:#464c53;">건수 많은 순 상위 10개 · 누르면 원문</span>
     <button data-noexport="1" data-xl="subs" onClick="{{ dlXl }}" title="엑셀(xlsx)로 내려받기" aria-label="엑셀로 내려받기" style="align-self:center;flex:none;height:22px;line-height:1;display:flex;align-items:center;gap:4px;padding:0 8px;border:1px solid #b1b8be;border-radius:2px;background:#fff;color:#464c53;font-size:12px;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;border-color:#1c589c;color:#063a74;" style-active="background:#dfe6ef;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>Excel</button></div>
     <div style="overflow-x:auto;flex:1;display:flex;flex-direction:column;">
@@ -499,7 +496,7 @@ button:disabled{opacity:0.4;cursor:not-allowed}
         </div>
       </div>
       <div style="min-width:720px;padding:4px 18px 8px;display:flex;flex-direction:column;">
-        <div style="display:grid;grid-template-columns:minmax(140px,1.4fr) repeat(6,minmax(84px,1fr));gap:12px;padding:10px 0 8px;border-bottom:1px solid #cdd1d5;font-size:12.5px;font-weight:700;color:#464c53;text-align:right;"><span style="text-align:left;">접수 건수</span><span>민원인 수</span><span>민원인 비중</span><span>민원 건수</span><span>민원 비중</span><span>평균 처리기간</span><span>평균 만족도 점수</span></div>
+        <div style="display:grid;grid-template-columns:minmax(140px,1.4fr) repeat(6,minmax(84px,1fr));gap:12px;padding:10px 0 8px;border-bottom:1px solid #cdd1d5;font-size:12.5px;font-weight:700;color:#464c53;text-align:right;"><span style="text-align:left;">접수 건수</span><span>민원인 (명)</span><span>전체 민원인 중 (%)</span><span>접수 민원 (건)</span><span>전체 민원 중 (%)</span><span>평균 처리기간</span><span>평균 만족도 점수</span></div>
         <sc-for list="{{ pAll }}" as="g" hint-placeholder-count="7">
           <div onClick="{{ g.go }}" style-hover="background:#f4f6f9" title="눌러서 원문 보기" style="cursor:pointer;display:grid;grid-template-columns:minmax(140px,1.4fr) repeat(6,minmax(84px,1fr));gap:12px;align-items:center;padding:9px 0;border-top:1px solid {{ g.line }};background:{{ g.bg }};font-size:13.5px;font-weight:{{ g.fw }};color:{{ g.fg }};text-align:right;font-variant-numeric:tabular-nums;">
             <span style="text-align:left;padding-left:{{ g.pl }};">{{ g.name }}</span>
@@ -520,16 +517,16 @@ button:disabled{opacity:0.4;cursor:not-allowed}
     <button data-noexport="1" data-xl="prows" onClick="{{ dlXl }}" title="엑셀(xlsx)로 내려받기" aria-label="엑셀로 내려받기" style="align-self:center;flex:none;height:22px;line-height:1;display:flex;align-items:center;gap:4px;padding:0 8px;border:1px solid #b1b8be;border-radius:2px;background:#fff;color:#464c53;font-size:12px;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;border-color:#1c589c;color:#063a74;" style-active="background:#dfe6ef;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>Excel</button></div>
     <sc-if value="{{ pNoRep }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 18px;font-size:13.5px;color:#464c53;text-align:center;">이 기간에 접수한 민원인이 없습니다.</div></sc-if>
     <sc-if value="{{ pHasRep }}" hint-placeholder-val="{{ true }}">
-    <div style="overflow:auto;max-height:410px;">
+    <div style="overflow:auto;max-height:560px;">
       <div style="min-width:780px;">
-        <div style="position:sticky;top:0;z-index:1;padding:7px 18px;background:#f4f5f6;border-bottom:1px solid #cdd1d5;display:grid;grid-template-columns:20px 120px 72px minmax(0,1fr) 190px 84px 96px;gap:10px;font-size:12.5px;font-weight:700;color:#464c53;">
+        <div style="position:sticky;top:0;z-index:1;padding:7px 18px;background:#f4f5f6;border-bottom:1px solid #cdd1d5;display:grid;grid-template-columns:20px 150px 72px minmax(0,1fr) 190px 84px 96px;gap:10px;font-size:12.5px;font-weight:700;color:#464c53;">
           <span></span><span>민원인</span><span style="text-align:right;">접수 건수</span><span>주요 세부현안</span><span>접수 기간</span><span style="text-align:center;">불만족 건수</span><span style="text-align:right;">평균 처리기간</span>
         </div>
         <sc-for list="{{ pRows }}" as="p" hint-placeholder-count="8">
           <div style="display:flex;flex-direction:column;border-bottom:1px solid #eef0f2;">
-            <button onClick="{{ p.toggle }}" style="display:grid;grid-template-columns:20px 120px 72px minmax(0,1fr) 190px 84px 96px;gap:10px;align-items:center;padding:8px 18px;border:0;border-radius:0;background:{{ p.bg }};font:inherit;font-size:13.5px;color:#1e2124;text-align:left;cursor:pointer;" style-hover="background:#f4f6f9">
+            <button onClick="{{ p.toggle }}" style="display:grid;grid-template-columns:20px 150px 72px minmax(0,1fr) 190px 84px 96px;gap:10px;align-items:center;padding:8px 18px;border:0;border-radius:0;background:{{ p.bg }};font:inherit;font-size:13.5px;color:#1e2124;text-align:left;cursor:pointer;" style-hover="background:#f4f6f9">
               <span style="color:#063a74;text-align:center;font-weight:700;">{{ p.mark }}</span>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;">{{ p.id }}</span>
+              <span style="display:flex;align-items:center;gap:6px;min-width:0;"><sc-if value="{{ p.isTop }}" hint-placeholder-val="{{ false }}"><span title="다빈도 민원인 Top3" style="width:20px;height:20px;flex:none;background:#063a74;color:#fff;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;">{{ p.rank }}</span></sc-if><span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;">{{ p.id }}</span></span>
               <b style="text-align:right;font-variant-numeric:tabular-nums;">{{ p.n }}</b>
               <span style="display:flex;gap:6px;align-items:baseline;min-width:0;"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ p.top }}</span><span style="font-size:12px;color:#6d7882;white-space:nowrap;">{{ p.topMore }}</span></span>
               <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#464c53;white-space:nowrap;">{{ p.span }}</span>
@@ -538,6 +535,25 @@ button:disabled{opacity:0.4;cursor:not-allowed}
             </button>
             <sc-if value="{{ p.open }}" hint-placeholder-val="{{ false }}">
               <div style="padding:12px 18px 14px 48px;background:#f4f6f9;border-top:1px solid #dfe6ef;display:flex;flex-direction:column;gap:10px;">
+                <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(180px,1fr) minmax(180px,1fr);gap:10px;">
+                  <div style="padding:10px 12px;display:flex;flex-direction:column;gap:6px;min-width:0;background:#fff;border:1px solid #dfe6ef;">
+                    <span style="font-size:12.5px;font-weight:700;color:#464c53;">{{ p.mTitle }}</span>
+                    <div style="display:flex;align-items:flex-end;gap:3px;height:96px;">
+                      <sc-for list="{{ p.months }}" as="m" hint-placeholder-count="12"><div title="{{ m.title }}" style="flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:2px;"><span style="font-size:10.5px;font-weight:700;color:#063a74;line-height:1;">{{ m.v }}</span><span style="width:100%;height:{{ m.h }}%;min-height:{{ m.min }};background:{{ m.bg }};display:block;"></span></div></sc-for>
+                    </div>
+                    <div style="display:flex;gap:3px;">
+                      <sc-for list="{{ p.months }}" as="m" hint-placeholder-count="12"><span style="flex:1;min-width:0;text-align:center;font-size:10.5px;color:#6d7882;overflow:hidden;white-space:nowrap;">{{ m.lb }}</span></sc-for>
+                    </div>
+                  </div>
+                  <div style="padding:10px 12px;display:flex;flex-direction:column;gap:6px;min-width:0;background:#fff;border:1px solid #dfe6ef;">
+                    <span style="display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12.5px;font-weight:700;color:#464c53;">세부현안<sc-if value="{{ p.sx.more }}" hint-placeholder-val="{{ false }}"><button onClick="{{ p.sx.go }}" aria-expanded="{{ p.sx.open }}" style="border:0;background:none;padding:0;font-family:inherit;font-size:12px;font-weight:500;color:#063a74;cursor:pointer;white-space:nowrap;" style-hover="text-decoration:underline">{{ p.sx.btn }}</button></sc-if></span>
+                    <div style="display:flex;flex-direction:column;gap:6px;max-height:118px;overflow-y:auto;padding-right:4px;"><sc-for list="{{ p.sx.items }}" as="x" hint-placeholder-count="3"><span style="display:flex;justify-content:space-between;gap:6px;font-size:13px;flex:none;"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ x.name }}</span><b style="flex:none;font-variant-numeric:tabular-nums;">{{ x.n }}건</b></span></sc-for></div>
+                  </div>
+                  <div style="padding:10px 12px;display:flex;flex-direction:column;gap:6px;min-width:0;background:#fff;border:1px solid #dfe6ef;">
+                    <span style="display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12.5px;font-weight:700;color:#464c53;">처리부서<sc-if value="{{ p.dx.more }}" hint-placeholder-val="{{ false }}"><button onClick="{{ p.dx.go }}" aria-expanded="{{ p.dx.open }}" style="border:0;background:none;padding:0;font-family:inherit;font-size:12px;font-weight:500;color:#063a74;cursor:pointer;white-space:nowrap;" style-hover="text-decoration:underline">{{ p.dx.btn }}</button></sc-if></span>
+                    <div style="display:flex;flex-direction:column;gap:6px;max-height:118px;overflow-y:auto;padding-right:4px;"><sc-for list="{{ p.dx.items }}" as="x" hint-placeholder-count="3"><span style="display:flex;justify-content:space-between;gap:6px;font-size:13px;flex:none;"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ x.name }}</span><b style="flex:none;font-variant-numeric:tabular-nums;">{{ x.n }}건</b></span></sc-for></div>
+                  </div>
+                </div>
                 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
                   <span style="font-size:12.5px;color:#464c53;">{{ p.histCap }}</span>
                   <button onClick="{{ p.all }}" style="height:30px;padding:0 12px;font-size:12.5px;border:1px solid #063a74;border-radius:2px;background:#fff;color:#063a74;font-weight:700;cursor:pointer;white-space:nowrap;" style-hover="background:#eef2f7">원문 모두 보기 →</button>
@@ -623,51 +639,6 @@ button:disabled{opacity:0.4;cursor:not-allowed}
       </sc-if>
     </section>
 
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:20px;align-items:stretch;">
-<section style="background:#fff;border:1px solid #cdd1d5;display:flex;flex-direction:column;">
-      <div style="padding:12px 18px;border-bottom:1px solid #cdd1d5;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
-        <h3 style="margin:0;font-family:inherit;font-size:15.5px;font-weight:700;color:#063a74;letter-spacing:0;">다빈도 민원인 Top3</h3>
-        <span style="margin-left:auto;font-size:13px;color:#464c53;">{{ t3Caption }}</span>
-      <button data-noexport="1" data-xl="person" onClick="{{ dlXl }}" title="엑셀(xlsx)로 내려받기" aria-label="엑셀로 내려받기" style="align-self:center;flex:none;height:22px;line-height:1;display:flex;align-items:center;gap:4px;padding:0 8px;border:1px solid #b1b8be;border-radius:2px;background:#fff;color:#464c53;font-size:12px;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;border-color:#1c589c;color:#063a74;" style-active="background:#dfe6ef;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>Excel</button></div>
-      <sc-if value="{{ t3None }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 18px;font-size:13.5px;color:#464c53;text-align:center;">이 기간에 다빈도 민원인이 없습니다.</div></sc-if>
-      <div style="padding:16px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;">
-        <sc-for list="{{ t3 }}" as="p" hint-placeholder-count="3">
-          <div style="border:1px solid #cdd1d5;display:flex;flex-direction:column;">
-            <div style="padding:12px 14px;border-bottom:1px solid #cdd1d5;display:flex;align-items:center;gap:10px;">
-              <span style="width:26px;height:26px;flex:none;background:#063a74;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;">{{ p.rank }}</span>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:13.5px;font-weight:700;min-width:0;">{{ p.id }}</span>
-              <span style="margin-left:auto;font-size:22px;font-weight:700;color:#063a74;line-height:1;">{{ p.n }}<span style="font-size:13px;font-weight:500;color:#464c53;margin-left:2px;">건</span></span>
-            </div>
-            <div style="padding:12px 14px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid #eef0f2;">
-              <span style="font-size:12.5px;font-weight:700;color:#464c53;">{{ p.mTitle }}</span>
-              <div style="display:flex;align-items:flex-end;gap:3px;height:56px;">
-                <sc-for list="{{ p.months }}" as="m" hint-placeholder-count="12"><div title="{{ m.title }}" style="flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:2px;"><span style="font-size:10.5px;font-weight:700;color:#063a74;line-height:1;">{{ m.v }}</span><span style="width:100%;height:{{ m.h }}%;min-height:{{ m.min }};background:{{ m.bg }};display:block;"></span></div></sc-for>
-              </div>
-              <div style="display:flex;gap:3px;">
-                <sc-for list="{{ p.months }}" as="m" hint-placeholder-count="12"><span style="flex:1;min-width:0;text-align:center;font-size:10.5px;color:#6d7882;overflow:hidden;white-space:nowrap;">{{ m.lb }}</span></sc-for>
-              </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #eef0f2;">
-              <div style="padding:12px 14px;display:flex;flex-direction:column;gap:6px;border-right:1px solid #eef0f2;min-width:0;">
-                <span style="display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12.5px;font-weight:700;color:#464c53;">세부현안<sc-if value="{{ p.sx.more }}" hint-placeholder-val="{{ false }}"><button onClick="{{ p.sx.go }}" aria-expanded="{{ p.sx.open }}" style="border:0;background:none;padding:0;font-family:inherit;font-size:12px;font-weight:500;color:#063a74;cursor:pointer;white-space:nowrap;" style-hover="text-decoration:underline">{{ p.sx.btn }}</button></sc-if></span>
-                <sc-for list="{{ p.sx.items }}" as="x" hint-placeholder-count="3"><span style="display:flex;justify-content:space-between;gap:6px;font-size:13px;"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ x.name }}</span><b style="flex:none;font-variant-numeric:tabular-nums;">{{ x.n }}건</b></span></sc-for>
-              </div>
-              <div style="padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0;">
-                <span style="display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12.5px;font-weight:700;color:#464c53;">처리부서<sc-if value="{{ p.dx.more }}" hint-placeholder-val="{{ false }}"><button onClick="{{ p.dx.go }}" aria-expanded="{{ p.dx.open }}" style="border:0;background:none;padding:0;font-family:inherit;font-size:12px;font-weight:500;color:#063a74;cursor:pointer;white-space:nowrap;" style-hover="text-decoration:underline">{{ p.dx.btn }}</button></sc-if></span>
-                <sc-for list="{{ p.dx.items }}" as="x" hint-placeholder-count="3"><span style="display:flex;justify-content:space-between;gap:6px;font-size:13px;"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ x.name }}</span><b style="flex:none;font-variant-numeric:tabular-nums;">{{ x.n }}건</b></span></sc-for>
-              </div>
-            </div>
-            <div style="padding:10px 14px;display:flex;align-items:center;gap:10px;margin-top:auto;">
-              <span style="font-size:12.5px;color:#464c53;">만족도 응답 <b style="color:#1e2124;">{{ p.resp }}건</b> · 불만족 <b style="color:{{ p.badC }};">{{ p.bad }}건</b></span>
-              <button onClick="{{ p.all }}" style="margin-left:auto;height:28px;padding:0 10px;font-size:12.5px;border:1px solid #063a74;border-radius:2px;background:#fff;color:#063a74;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap;" style-hover="background:#eef2f7">원문 보기 →</button>
-            </div>
-          </div>
-        </sc-for>
-      </div>
-    </section>
-
-  </div>
-
 </div>
 </sc-if>
 
@@ -692,7 +663,8 @@ button:disabled{opacity:0.4;cursor:not-allowed}
   <section style="background:#fff;border:1px solid #cdd1d5;display:flex;flex-direction:column;flex:1;">
       <div style="padding:12px 18px;border-bottom:1px solid #cdd1d5;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
         <h3 style="margin:0;font-family:inherit;font-size:15.5px;font-weight:700;color:#063a74;letter-spacing:0;">{{ trendUnit }} 민원 건수 추이</h3>
-        <sc-if value="{{ trSelOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ trClear }}" title="선택 해제" style="height:24px;padding:0 8px;border:1px solid #de3412;border-radius:2px;background:#fdecea;color:#b42a0f;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap;" style-hover="background:#fbd9d3">{{ trSelLabel }} 선택됨 ×</button></sc-if>
+        <sc-if value="{{ trDrillOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:4px;font-size:13px;"><span style="color:#6d7882;">›</span><b style="color:#063a74;">{{ trCurLabel }}</b><button onClick="{{ trUp }}" title="상위 구간으로 돌아가기" style="margin-left:4px;height:24px;padding:0 8px;border:1px solid #b1b8be;border-radius:2px;background:#fff;color:#464c53;font-size:12.5px;font-family:inherit;cursor:pointer;white-space:nowrap;" style-hover="background:#eef2f7;border-color:#1c589c;color:#063a74;">← {{ trUpLabel }}</button></div></sc-if>
+        <sc-if value="{{ trWkOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ trWkClear }}" title="선택 해제" style="height:24px;padding:0 8px;border:1px solid #de3412;border-radius:2px;background:#fdecea;color:#b42a0f;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap;" style-hover="background:#fbd9d3">{{ trWkLabel }} 선택됨 ×</button></sc-if>
         <span style="margin-left:auto;font-size:13px;color:#464c53;">{{ trendNote }}</span>
       <button data-noexport="1" data-xl="trend" onClick="{{ dlXl }}" title="엑셀(xlsx)로 내려받기" aria-label="엑셀로 내려받기" style="align-self:center;flex:none;height:22px;line-height:1;display:flex;align-items:center;gap:4px;padding:0 8px;border:1px solid #b1b8be;border-radius:2px;background:#fff;color:#464c53;font-size:12px;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;border-color:#1c589c;color:#063a74;" style-active="background:#dfe6ef;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>Excel</button></div>
       <div style="padding:16px 18px 12px;display:flex;flex-direction:column;gap:4px;flex:1;justify-content:center;">
@@ -728,6 +700,7 @@ button:disabled{opacity:0.4;cursor:not-allowed}
         <div style="display:grid;grid-template-columns:repeat({{ trendN }},minmax(0,1fr));">
           <sc-for list="{{ trend }}" as="t" hint-placeholder-count="12"><span style="text-align:center;font-size:11.5px;color:#464c53;font-family:'JetBrains Mono',monospace;">{{ t.p }}</span></sc-for>
         </div>
+
       </div>
     </section>
 
@@ -736,14 +709,15 @@ button:disabled{opacity:0.4;cursor:not-allowed}
     <div style="flex:2 1 560px;min-width:0;display:flex;flex-direction:column;">
 <section style="background:#fff;border:1px solid #cdd1d5;display:flex;flex-direction:column;flex:1;">
       <div style="padding:12px 18px;border-bottom:1px solid #cdd1d5;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
-        <h3 style="margin:0;font-family:inherit;font-size:15.5px;font-weight:700;color:#063a74;letter-spacing:0;">세부현안별 민원 순위</h3>
+        <h3 style="margin:0;font-family:inherit;font-size:15.5px;font-weight:700;color:#063a74;letter-spacing:0;">현안별 민원 순위</h3>
+        <sc-if value="{{ rankDrill }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:4px;font-size:13px;"><span style="color:#6d7882;">›</span><b style="color:#063a74;">{{ rankHyName }}</b><button onClick="{{ rankUp }}" title="전체 현안으로 돌아가기" style="margin-left:4px;height:24px;padding:0 8px;border:1px solid #b1b8be;border-radius:2px;background:#fff;color:#464c53;font-size:12.5px;font-family:inherit;cursor:pointer;white-space:nowrap;" style-hover="background:#eef2f7;border-color:#1c589c;color:#063a74;">← 전체 현안</button></div></sc-if>
         <sc-if value="{{ trSelOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ trClear }}" title="전체 기간으로 보기" style="height:24px;padding:0 8px;border:1px solid #1c589c;border-radius:2px;background:#eef2f7;color:#063a74;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap;" style-hover="background:#dfe6ef">{{ trSelLabel }} ×</button></sc-if>
         <span style="margin-left:auto;font-size:13px;color:#464c53;">{{ rankCaption }}</span>
       <button data-noexport="1" data-xl="rank" onClick="{{ dlXl }}" title="엑셀(xlsx)로 내려받기" aria-label="엑셀로 내려받기" style="align-self:center;flex:none;height:22px;line-height:1;display:flex;align-items:center;gap:4px;padding:0 8px;border:1px solid #b1b8be;border-radius:2px;background:#fff;color:#464c53;font-size:12px;font-family:inherit;cursor:pointer;" style-hover="background:#eef2f7;border-color:#1c589c;color:#063a74;" style-active="background:#dfe6ef;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>Excel</button></div>
       <div style="padding:4px 18px 4px;display:flex;flex-direction:column;flex:1;">
-        <div style="display:grid;grid-template-columns:28px minmax(110px,190px) minmax(0,1fr) 96px 112px;gap:12px;padding:7px 0;border-bottom:1px solid #cdd1d5;font-size:12.5px;font-weight:700;color:#464c53;"><span style="text-align:center;">순위</span><span>세부현안</span><span></span><span style="text-align:right;">건수 · 비중</span><span style="text-align:right;">전년 대비</span></div>
+        <div style="display:grid;grid-template-columns:28px minmax(110px,190px) minmax(0,1fr) 96px 112px;gap:12px;padding:7px 0;border-bottom:1px solid #cdd1d5;font-size:12.5px;font-weight:700;color:#464c53;"><span style="text-align:center;">순위</span><span>{{ rankCol }}</span><span></span><span style="text-align:right;">건수 · 비중</span><span style="text-align:right;">전년 대비</span></div>
         <sc-for list="{{ rankRows }}" as="r" hint-placeholder-count="10">
-          <div onClick="{{ r.go }}" style-hover="background:#f4f6f9" title="{{ r.title }} · 눌러서 원문 보기" style="cursor:pointer;flex:1 1 auto;display:grid;grid-template-columns:28px minmax(110px,190px) minmax(0,1fr) 96px 112px;gap:12px;align-items:center;padding:6px 0;border-bottom:1px solid {{ r.bd }};">
+          <div onClick="{{ r.go }}" style-hover="background:#f4f6f9" title="{{ r.title }}" style="cursor:pointer;flex:1 1 auto;display:grid;grid-template-columns:28px minmax(110px,190px) minmax(0,1fr) 96px 112px;gap:12px;align-items:center;padding:6px 0;border-bottom:1px solid {{ r.bd }};">
             <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:{{ r.rc }};text-align:center;">{{ r.rank }}</span>
             <span style="display:flex;flex-direction:column;min-width:0;line-height:1.3;">
               <span style="font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.name }}</span>
@@ -847,46 +821,6 @@ button:disabled{opacity:0.4;cursor:not-allowed}
 </div>
 </sc-if>
 
-<sc-if value="{{ rptOpen }}" hint-placeholder-val="{{ false }}">
-  <div style="position:fixed;inset:0;background:rgba(5,43,87,0.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20;">
-    <section style="background:#fff;border:1px solid #cdd1d5;width:min(720px,100%);max-height:100%;overflow-y:auto;">
-      <div style="padding:12px 18px;border-bottom:1px solid #cdd1d5;display:flex;justify-content:space-between;gap:8px;align-items:center;">
-        <h2 style="margin:0;font-family:inherit;font-size:16px;font-weight:700;color:#063a74;letter-spacing:0;">보고서 내려받기</h2>
-        <button onClick="{{ closeRpt }}" aria-label="닫기" style="width:32px;height:32px;border:1px solid #b1b8be;border-radius:2px;background:#fff;font-size:16px;cursor:pointer;" style-hover="background:#f4f5f6">×</button>
-      </div>
-      <div style="padding:10px 18px;background:#f4f5f6;border-bottom:1px solid #cdd1d5;font-size:13.5px;color:#1e2124;">보고서는 DB에 저장된 비식별 데이터로 만듭니다. 민원인 개인정보는 들어가지 않습니다.</div>
-      <div style="padding:18px;display:flex;flex-direction:column;gap:22px;">
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <span style="font-size:14px;font-weight:700;">분석 기간</span>
-          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;border:1px solid #cdd1d5;background:#f4f5f6;">
-            <span style="height:28px;padding:0 12px;display:inline-flex;align-items:center;background:#063a74;color:#fff;font-size:14px;font-weight:700;">{{ reportType }}</span>
-            <span style="font-size:17px;font-weight:700;">{{ periodLabel }}</span>
-          </div>
-          <span style="font-size:13px;color:#464c53;">업로드한 데이터 기간에 따라 보고서 유형이 정해집니다</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <span style="font-size:14px;font-weight:700;">넣을 내용</span>
-          <div style="display:flex;flex-wrap:wrap;gap:8px;">
-            <sc-for list="{{ includeOpts }}" as="o" hint-placeholder-count="7">
-              <button onClick="{{ o.toggle }}" style="height:36px;padding:0 14px;border:1px solid {{ o.line }};border-radius:2px;background:{{ o.bg }};color:{{ o.fg }};font-size:14px;font-weight:{{ o.weight }};cursor:pointer;display:flex;align-items:center;gap:6px;">{{ o.mark }}{{ o.label }}</button>
-            </sc-for>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:10px;padding-top:16px;border-top:1px solid #cdd1d5;">
-          <span style="font-size:17px;font-weight:700;">{{ reportTitle }}</span>
-          <button onClick="{{ generate }}" disabled="{{ genRunning }}" style="height:48px;border:0;border-radius:2px;background:#063a74;color:#fff;font-size:16px;font-weight:700;cursor:pointer;" style-hover="background:#1c589c">{{ genLabel }}</button>
-          <sc-if value="{{ genRunning }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;flex-direction:column;gap:6px;">
-              <div style="height:8px;background:#eef0f2;"><div style="height:8px;width:{{ genPct }}%;background:#063a74;transition:width .5s;"></div></div>
-              <span style="font-size:13px;color:#464c53;">{{ genStepName }}</span>
-            </div>
-          </sc-if>
-        </div>
-      </div>
-    </section>
-  </div>
-</sc-if>
-
 <sc-if value="{{ rpOn }}" hint-placeholder-val="{{ false }}">
 <div onClick="{{ closeRp }}" style="position:fixed;inset:0;background:rgba(5,43,87,0.32);z-index:80;"></div>
 <aside style="position:fixed;top:0;right:0;bottom:0;width:min(560px,100vw);background:#f4f5f6;z-index:81;display:flex;flex-direction:column;box-shadow:-8px 0 24px rgba(5,43,87,0.18);">
@@ -959,28 +893,6 @@ button:disabled{opacity:0.4;cursor:not-allowed}
   <span style="opacity:0.85;">현안 분류 모델 v1.3 · 현안 11종 / 세부현안 52종</span>
 </footer>
 
-<sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
-  <div style="position:fixed;inset:0;background:rgba(5,43,87,0.45);display:flex;justify-content:flex-end;z-index:20;">
-    <div onClick="{{ closeDrawer }}" style="flex:1;"></div>
-    <aside style="width:min(760px,100%);height:100%;background:#fff;display:flex;flex-direction:column;border-left:1px solid #cdd1d5;">
-      <div style="padding:14px 20px;border-bottom:1px solid #cdd1d5;display:flex;align-items:center;gap:12px;">
-        <h3 style="margin:0;font-family:inherit;font-size:19px;font-weight:700;letter-spacing:0;flex:1;">보고서 미리보기</h3>
-        <button onClick="{{ dlReport }}" style="height:32px;border:0;border-radius:2px;background:#063a74;color:#fff;padding:0 12px;font-size:13px;font-weight:700;cursor:pointer;" style-hover="background:#1c589c">Word(.docx) 내려받기</button>
-        <button onClick="{{ closeDrawer }}" aria-label="닫기" style="width:32px;height:32px;border:1px solid #b1b8be;border-radius:2px;background:#fff;font-size:16px;cursor:pointer;" style-hover="background:#f4f5f6">×</button>
-      </div>
-      <div style="padding:10px 20px;background:#f4f5f6;color:#1e2124;font-size:13.5px;border-bottom:1px solid #cdd1d5;">내려받은 뒤 필요하면 문구를 고쳐 결재에 올리세요.</div>
-      <div style="flex:1;overflow-y:auto;background:#f4f5f6;padding:24px;">
-        <article style="background:#fff;border:1px solid #cdd1d5;padding:40px 44px;display:flex;flex-direction:column;gap:22px;max-width:640px;margin:0 auto;">
-          <header style="display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;border-bottom:2px solid #063a74;padding-bottom:14px;">
-            <span style="font-size:22px;font-weight:700;line-height:1.35;">{{ pv.title }}</span>
-            <span style="font-size:12.5px;color:#464c53;">{{ officeName }} · 자동 생성 {{ pv.created }}</span>
-          </header>
-          <sc-for list="{{ pv.sections }}" as="sec" hint-placeholder-count="4">
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <h4 style="margin:0;font-family:inherit;font-size:16px;font-weight:700;color:#063a74;letter-spacing:0;">{{ sec.title }}</h4>
-              <sc-for list="{{ sec.items }}" as="it" hint-placeholder-count="3">
-                <div style="display:flex;flex-direction:column;gap:4px;">
-                  <sc-if value="{{ it.hasHead }}" hint-placeholder-val="{{ true }}"><span style="font-size:14.5px;font-weight:700;line-height:1.6;text-wrap:pretty;">{{ it.head }}</span></sc-if>
                   <sc-if value="{{ it.hasTbl }}" hint-placeholder-val="{{ false }}">
                     <div style="display:flex;flex-direction:column;gap:4px;margin:2px 0 4px;">
                       <div style="display:grid;grid-template-columns:{{ it.cols }};border-top:1px solid #b1b8be;border-left:1px solid #b1b8be;font-size:12px;">
@@ -1027,7 +939,8 @@ const CH = [['국민신문고', '국민신문고 Web', 487], ['국민신문고',
 const SIDO = ['세종', '충남', '서울', '경기', '대전', '충북', '전남광주', '부산', '인천', '경남', '전북', '경북', '대구', '강원', '울산', '제주'];
 const SIDOW = [716, 94, 89, 36, 35, 19, 11, 7, 7, 5, 5, 4, 3, 1, 1, 1];
 const SAT = ['매우만족', '만족', '보통', '불만', '매우불만'], SATW = [25.0, 21.7, 12.0, 19.2, 22.0];
-const REP_MIN = 3;
+let REP_MIN = 3, REP_MON = 12;
+const setRep = months => { REP_MON = months; REP_MIN = Math.max(3, Math.ceil(3 * months / 12)); };
 const DIST = {
   '세종': [['고운동', 73], ['어진동', 66], ['새롬동', 62], ['다정동', 59], ['조치원읍', 54], ['아름동', 51], ['종촌동', 42], ['보람동', 39], ['도담동', 36], ['나성동', 27], ['한솔동', 27], ['소담동', 26], ['해밀동', 21], ['반곡동', 19], ['대평동', 17], ['금남면', 7], ['부강면', 6], ['장군면', 5], ['연서면', 4], ['연기면', 3], ['전의면', 3]],
   '서울': '강남구 송파구 강서구 노원구 서초구 양천구 강동구 관악구 은평구 마포구 성북구 영등포구', '부산': '해운대구 부산진구 동래구 사하구 북구 남구 금정구 연제구 수영구 사상구 기장군',
@@ -1354,21 +1267,22 @@ class Component extends DCLogic {
     const cnt = {}; recs.forEach(r => { const d = r.dept || '미기재'; cnt[d] = (cnt[d] || 0) + 1; });
     const depts = desc(cnt);
     if (!depts.length) return { dv: { dept: '', metrics: [], kpis: [], quality: [], subs: [], longs: [], trend: [], repeats: [], myRecs: [] }, deptOpts: [], deptCount: 0 };
-    const dept = forDept ?? (depts.some(d => d[0] === this.state.dept) ? this.state.dept : depts[0][0]);
-    const my = recs.filter(r => (r.dept || '미기재') === dept), n = my.length;
+    const ALLD = '__all__', dept = forDept ?? (this.state.dept === ALLD || depts.some(d => d[0] === this.state.dept) ? this.state.dept : ALLD);
+    const isAll = dept === ALLD, dn = isAll ? '전체 부서' : dept, isMine = r => isAll || (r.dept || '미기재') === dept;
+    const my = recs.filter(isMine), n = my.length;
     const avgOf = rs => { const d = rs.filter(r => r.done); return d.length ? sum(d.map(r => r.days)) / d.length : null; };
     const allAvg = avgOf(recs), myAvg = avgOf(my);
     const bySub = {}; my.forEach(r => (bySub[r.s] = bySub[r.s] || []).push(r));
     const allBySub = {}; recs.forEach(r => (allBySub[r.s] = allBySub[r.s] || []).push(r));
     const subList = Object.entries(bySub).sort((a, b) => b[1].length - a[1].length).slice(0, 10), smax = subList.length ? subList[0][1].length : 1;
-    const yc = this.compare(oi, from, to, 'yoy'), yMy = yc.ok ? yc.A.recs.filter(r => (r.dept || '미기재') === dept) : null, yCnt = {};
+    const yc = this.compare(oi, from, to, 'yoy'), yMy = yc.ok ? yc.A.recs.filter(isMine) : null, yCnt = {};
     (yMy || []).forEach(r => { yCnt[r.s] = (yCnt[r.s] || 0) + 1; });
     const subs = subList.map(([s, rs], k) => {
-      const a = rs.filter(r => r.done).length >= 3 ? avgOf(rs) : null, oth = allBySub[s].filter(r => (r.dept || '미기재') !== dept), b = oth.filter(r => r.done).length >= 3 ? avgOf(oth) : null, solo = b == null;
+      const a = rs.filter(r => r.done).length >= 3 ? avgOf(rs) : null, oth = allBySub[s].filter(r => !isMine(r)), b = oth.filter(r => r.done).length >= 3 ? avgOf(oth) : null, solo = b == null;
       const yp = yCnt[s] || 0, yd = rs.length - yp, yN = !yMy ? '—' : !yp ? '신규' : yd > 0 ? `+${fmt(yd)}건` : yd < 0 ? `−${fmt(-yd)}건` : '변동 없음', yP = yMy && yp && yd ? `(${yd > 0 ? '+' : '−'}${Math.round(Math.abs(yd) / yp * 100)}%)` : '';
-      return { yN, yP, yC: yMy && yd > 0 ? '#de3412' : '#6d7882', yTitle: yMy ? `전년 동기 ${fmt(yp)}건 → ${fmt(rs.length)}건` : '전년 동기 데이터 없음', yPrev: yMy ? yp : '', bd: k < subList.length - 1 ? '#eef0f2' : 'transparent', go: () => this.openRecs(SUBS[s].n, dept, rs), name: SUBS[s].n, hyun: HYUN[SUBS[s].h][0], n: fmt(rs.length), pct: rs.length / smax * 100, share: pc(rs.length, n), color: k === 0 ? NAVY : NAVY2, days: a == null ? '—' : `${a.toFixed(1)}일`, allDays: b == null ? '없음' : `${b.toFixed(1)}일`, dColor: !solo && a != null && b != null && a > b * 1.2 ? RED : '#1e2124' };
+      return { yN, yP, yC: yMy && yd > 0 ? '#de3412' : '#6d7882', yTitle: yMy ? `전년 동기 ${fmt(yp)}건 → ${fmt(rs.length)}건` : '전년 동기 데이터 없음', yPrev: yMy ? yp : '', bd: k < subList.length - 1 ? '#eef0f2' : 'transparent', go: () => this.openRecs(SUBS[s].n, dn, rs), name: SUBS[s].n, hyun: HYUN[SUBS[s].h][0], n: fmt(rs.length), pct: rs.length / smax * 100, share: pc(rs.length, n), color: k === 0 ? NAVY : NAVY2, days: a == null ? '—' : `${a.toFixed(1)}일`, allDays: b == null ? '없음' : `${b.toFixed(1)}일`, dColor: !solo && a != null && b != null && a > b * 1.2 ? RED : '#1e2124' };
     });
-    const longs = my.filter(r => r.done).sort((a, b) => b.days - a.days).slice(0, 10).map(r => ({ go: () => this.openRecs(recTitle(r), dept, [r]), date: `${MONTHS[r.mi].label}.${String(r.day).padStart(2, '0')}`, title: recTitle(r), sub: SUBS[r.s].n, days: dayFmt(r.days), color: allAvg != null && r.days > allAvg * 2 ? RED : '#1e2124' }));
+    const longs = my.filter(r => r.done).sort((a, b) => b.days - a.days).slice(0, 10).map(r => ({ go: () => this.openRecs(recTitle(r), dn, [r]), date: `${MONTHS[r.mi].label}.${String(r.day).padStart(2, '0')}`, title: recTitle(r), sub: SUBS[r.s].n, days: dayFmt(r.days), color: allAvg != null && r.days > allAvg * 2 ? RED : '#1e2124' }));
     const unsatAll = my.filter(r => r.sat >= 3).sort((a, b) => b.sat - a.sat || b.mi - a.mi || b.day - a.day);
     const unsat = unsatAll.slice(0, 10).map(r => ({ date: `${MONTHS[r.mi].label}.${String(r.day).padStart(2, '0')}`, title: recTitle(r), sub: SUBS[r.s].n, sat: SAT[r.sat], satBg: r.sat === 4 ? '#fdecea' : '#fff4e5', satFg: r.sat === 4 ? '#de3412' : '#9e6a00', days: r.done ? dayFmt(r.days) : '처리 중' }));
     const unsatMsg = `만족도 응답 ${fmt(my.filter(r => r.sat >= 0).length)}건 중 불만·매우불만 ${fmt(unsatAll.length)}건${unsatAll.length > 10 ? ' · 매우불만·최근 순 10건' : ''}`;
@@ -1422,16 +1336,16 @@ class Component extends DCLogic {
     const verdict = !badR.length ? '' : vTop + vNone;
     const headline = topWins ? `${top.name}` : pNone >= 40 ? '답변 내용·제도' : '뚜렷한 원인 없음';
     const sig = [...sigRaw.map(x => ({ ...x, hl: topWins && x === top })), { name: '처리상 특이점 없음', desc: '위 4가지 모두 해당 없음 → 답변 내용·제도 관련 불만 가능성', rs: badR.filter(noFlag), b: pNone, g: gNone, nb: nNone, hl: !topWins && pNone >= 40 }]
-      .map(x => ({ go: () => this.openRecs(`불만족 · ${x.name}`, dept, x.rs), name: x.name, desc: x.desc, bW: x.b, gW: x.g, bTxt: `${fmt(x.nb)}건 · ${x.b.toFixed(0)}%`, gTxt: `${x.g.toFixed(0)}%`, bColor: x.hl ? RED : '#e9a89b', nameW: x.hl ? 700 : 500, nameC: x.hl ? RED : '#1e2124' }));
+      .map(x => ({ go: () => this.openRecs(`불만족 · ${x.name}`, dn, x.rs), name: x.name, desc: x.desc, bW: x.b, gW: x.g, bTxt: `${fmt(x.nb)}건 · ${x.b.toFixed(0)}%`, gTxt: `${x.g.toFixed(0)}%`, bColor: x.hl ? RED : '#e9a89b', nameW: x.hl ? 700 : 500, nameC: x.hl ? RED : '#1e2124' }));
     const subCnt = {}; badR.forEach(r => { subCnt[r.s] = (subCnt[r.s] || 0) + 1; });
     const subTop = Object.entries(subCnt).map(([s, c]) => [+s, c]).sort((a, b) => b[1] - a[1]), cmax = subTop.length ? subTop[0][1] : 1;
-    const conc = subTop.slice(0, 6).map(([s, c]) => { const st = subStat[s]; return { go: () => this.openRecs(`불만족 · ${SUBS[s].n}`, dept, badR.filter(r => r.s === s)), name: SUBS[s].n, n: `${c}건`, share: `${(c / badR.length * 100).toFixed(0)}%`, w: c / cmax * 100, rate: st && st.n >= 5 ? `불만족률 ${(st.b / st.n * 100).toFixed(0)}%` : `응답 ${st ? st.n : 0}건`, color: st && st.n >= 5 && st.b / st.n * 100 > dRate ? RED : '#9bb3d4' }; });
+    const conc = subTop.slice(0, 6).map(([s, c]) => { const st = subStat[s]; return { go: () => this.openRecs(`불만족 · ${SUBS[s].n}`, dn, badR.filter(r => r.s === s)), name: SUBS[s].n, n: `${c}건`, share: `${(c / badR.length * 100).toFixed(0)}%`, w: c / cmax * 100, rate: st && st.n >= 5 ? `불만족률 ${(st.b / st.n * 100).toFixed(0)}%` : `응답 ${st ? st.n : 0}건`, color: st && st.n >= 5 && st.b / st.n * 100 > dRate ? RED : '#9bb3d4' }; });
     const flat = badR.slice().sort((a, b) => b.sat - a.sat || (b.done ? b.days : 99) - (a.done ? a.days : 99));
     const casesF = () => flat.slice(0, 10).map(r => ({ ...um(r), dColor: '#1e2124', summary: recBody(r).split('\n').filter(Boolean).slice(-1)[0].slice(0, 80), re: isRe(r) ? '1회' : '0회', pn: `${(per[r.p] || [r]).length}건` }));
     const veryBad = badR.filter(r => r.sat === 4).length;
     const bandDef = [['당일', 0, 1], ['1~3일', 1, 4], ['4~7일', 4, 8], ['7일 초과', 8, 1e9]].map(([name, a, b]) => { const rs = resp.filter(r => r.done && r.days >= a && r.days < b); return [name, rs.length, rs.length ? rs.filter(isBad).length / rs.length * 100 : 0]; });
     const bmax = Math.max(1, ...bandDef.map(x => x[2]));
-    const um = r => ({ go: () => this.openRecs(recTitle(r), dept, [r]), date: `${MONTHS[r.mi].label}.${String(r.day).padStart(2, '0')}`, title: recTitle(r), sub: SUBS[r.s].n, sat: SAT[r.sat], satBg: r.sat === 4 ? '#fdecea' : '#fff4e5', satFg: r.sat === 4 ? '#de3412' : '#9e6a00', days: r.done ? dayFmt(r.days) : '처리 중', dColor: r.done && r.days > allAvg ? RED : '#464c53' });
+    const um = r => ({ go: () => this.openRecs(recTitle(r), dn, [r]), date: `${MONTHS[r.mi].label}.${String(r.day).padStart(2, '0')}`, title: recTitle(r), sub: SUBS[r.s].n, sat: SAT[r.sat], satBg: r.sat === 4 ? '#fdecea' : '#fff4e5', satFg: r.sat === 4 ? '#de3412' : '#9e6a00', days: r.done ? dayFmt(r.days) : '처리 중', dColor: r.done && r.days > allAvg ? RED : '#464c53' });
     const gOrder = [...subRank.map(x => x[0]), ...Object.keys(subStat).map(Number).filter(s => !subRank.some(x => x[0] === s))];
     const gAll = gOrder.map(s => ({ s, items: badR.filter(r => r.s === s).sort((a, b) => (b.done ? b.days : 99) - (a.done ? a.days : 99)) })).filter(g => g.items.length);
     const usList = gAll.flatMap(g => g.items.map(um));
@@ -1453,7 +1367,7 @@ class Component extends DCLogic {
       moreCases: flat.length > 10, moreCasesTxt: `외 ${fmt(flat.length - 10)}건은 Excel 버튼으로 모두 내려받을 수 있습니다.`,
       bands: bandDef.map(([name, n, v]) => ({ name, rate: n ? `${v.toFixed(0)}%` : '—', n: `${fmt(n)}건`, h: n ? Math.max(2, v / bmax * 100) : 0, color: v === bmax && n ? RED : '#9bb3d4' })),
       groups: gAll.slice(0, 4).map(g => { const st = subStat[g.s]; return { name: SUBS[g.s].n, meta: st.n >= 5 ? `불만족률 ${(st.b / st.n * 100).toFixed(1)}% · ${g.items.length}건` : `${g.items.length}건 · 응답 5건 미만`, items: g.items.slice(0, 3).map(um), more: g.items.length > 3, moreTxt: `외 ${g.items.length - 3}건` }; }),
-      restMsg: gAll.length > 4 ? `그 외 ${gAll.length - 4}개 세부현안 ${fmt(sum(gAll.slice(4).map(g => g.items.length)))}건은 Word 보고서에 모두 들어갑니다.` : '', hasRest: gAll.length > 4
+      restMsg: gAll.length > 4 ? `그 외 ${gAll.length - 4}개 세부현안 ${fmt(sum(gAll.slice(4).map(g => g.items.length)))}건이 더 있습니다.` : '', hasRest: gAll.length > 4
     };
     const quality = qDef.map(([label, a, b, f, hi, basis], qi) => {
       const mx = Math.max(a ?? 0, b ?? 0) || 1, ok = a != null && b != null, fewSat = qi === 1 && resp.length < 10, rare = false;
@@ -1462,44 +1376,13 @@ class Component extends DCLogic {
         verdict: fewSat ? '응답 부족' : rare ? '드물어 비교 안 함' : !ok ? '비교 불가' : near ? '비슷' : good ? '양호' : '개선 필요', vColor: fewSat || rare || !ok || near ? '#464c53' : good ? GREEN : RED, mColor: NAVY2 };
     });
     const d = new Date(), p2 = x => String(x).padStart(2, '0'), stamp = `${d.getFullYear()}${p2(d.getMonth() + 1)}${p2(d.getDate())}`;
-    const pn = periodName(from, to), summary = `${dept}에서는 이 기간 민원 ${fmt(n)}건(전체 ${fmt(recs.length)}건 중 ${pc(n, recs.length)}%)을 처리했고, 가장 많은 세부현안은 ${subs[0] ? `${subs[0].name}(${subs[0].n}건 · 부서 내 ${subs[0].share}%)` : '—'}입니다.`;
-    const blocks = () => {
-      const per2 = Object.keys(per).length;
-      return [
-        { t: 'title', text: `${pn.name} ${dept} 민원 처리 현황` },
-        { t: 'meta', text: `${OFFICES[oi][0]} · 분석 기간 ${rangeLabel(from, to)} (${to - from + 1}개월) · 작성일 ${d.getFullYear()}.${p2(d.getMonth() + 1)}.${p2(d.getDate())} · 민원 분석 보고서 생성 서비스` },
-        { t: 'h', text: 'Ⅰ. 개요' }, { t: 'p', text: summary },
-        ...(n < 10 ? [{ t: 'p', text: `※ 처리 건수가 ${n}건으로 적어 비율·평균은 참고용입니다.` }] : []),
-        { t: 'h', text: `Ⅱ. 처리 품질 (전체 평균 대비)` },
-        { t: 'table', widths: [2800, 2000, 2000, 2200], rows: [['지표', dept, '전체 평균', '판정'], ...quality.map(q => [q.label, q.mine, q.all, q.verdict])] },
-        ...quality.map(q => ({ t: 'li', text: `${q.label}: ${q.basis}` })),
-        { t: 'h', text: 'Ⅲ. 세부현안별 민원 현황' },
-        { t: 'table', widths: [2200, 1700, 1100, 1100, 1400, 1500], rows: [['세부현안', '현안', '건수', '비중', '평균 처리기간', '다른 부서 평균'], ...subs.map(s => [s.name, s.hyun, s.n, `${s.share}%`, s.days, s.allDays])] },
-        { t: 'h', text: 'Ⅳ. 처리기간 긴 민원 Top 10' },
-        { t: 'table', widths: [1500, 4300, 1800, 1400], rows: [['신청일', '제목', '세부현안', '처리기간'], ...longs.map(r => [r.date, r.title, r.sub, r.days])] },
-        { t: 'h', text: 'Ⅴ. 불만족 민원' },
-        { t: 'p', text: us.caption },
-        ...(us.verdict && us.analyze ? [{ t: 'p', text: us.verdict }] : us.fewBad ? [{ t: 'p', text: us.fewBadMsg }] : []),
-        ...(us.analyze ? us.sig.map(x => ({ t: 'li', text: `${x.name}: 불만족 민원 ${x.bTxt} / 만족 민원 ${x.gTxt}` })) : []),
-        ...(usList.length ? [{ t: 'table', widths: [1500, 3900, 1800, 1000, 800], rows: [['신청일', '제목', '세부현안', '처리기간', '만족도'], ...usList.map(r => [r.date, r.title, r.sub, r.days, r.sat])] }] : []),
-      ];
-    };
-    const fname = name => `${name}_민원분석_${stamp}.docx`;
+    const pn = periodName(from, to), summary = `${dn}에서는 이 기간 민원 ${fmt(n)}건(전체 ${fmt(recs.length)}건 중 ${pc(n, recs.length)}%)을 처리했고, 가장 많은 세부현안은 ${subs[0] ? `${subs[0].name}(${subs[0].n}건 · 부서 내 ${subs[0].share}%)` : '—'}입니다.`;
     return {
-      deptOpts: depts.map(([k, v]) => ({ value: k, label: `${k} (${fmt(v)}건)` })), deptCount: depts.length,
-      onDept: e => this.setState({ dept: e.target.value, dlMsg: '' }),
-      dlMsg: this.state.dlMsg || '',
-      blocks,
-      dlOne: async () => { const m = await import('./docx.js'); m.save(m.docx(blocks()), fname(dept), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'); this.setState({ dlMsg: `${fname(dept)} 파일을 내려받았습니다.` }); },
-      dlAll: async () => {
-        const m = await import('./docx.js'), files = [];
-        for (const [name] of depts) files.push([fname(name.replace(/[\\/:*?"<>|]/g, '_')), await m.blobBytes(m.docx(this.deptVals(oi, cv, from, to, name).blocks()))]);
-        m.save(m.zip(files), `부서별_민원분석_${stamp}.zip`);
-        this.setState({ dlMsg: `부서별_민원분석_${stamp}.zip 파일을 내려받았습니다. 부서 ${depts.length}곳의 보고서(.docx)가 들어 있습니다.` });
-      },
+      deptOpts: [{ value: ALLD, label: `전체 (${fmt(recs.length)}건)` }, ...depts.map(([k, v]) => ({ value: k, label: `${k} (${fmt(v)}건)` }))], deptCount: depts.length,
+      onDept: e => this.setState({ dept: e.target.value }),
       dv: {
         ...(() => { const kl = subList.map(([si, rs]) => [SUBS[si].n, rs.length]), sk = kl.some(k => k[0] === this.state.deptNetSub) ? this.state.deptNetSub : (kl[0] ? kl[0][0] : ''), sr = (subList.find(([si]) => SUBS[si].n === sk) || [0, []])[1]; return this.featCalc(recs, kl, sk, t => this.setState({ deptNetSub: t }), sr); })(),
-        dept, myRecs: my,
+        dept, dn, myRecs: my, deptOn: !isAll, deptAll: isAll,
         kpis: (() => {
           const dl = (cur, prev, kind, pf) => {
             if (prev == null) return { delta: '전년 동기 데이터 없음', prev: '', dColor: '#6d7882' };
@@ -1521,7 +1404,7 @@ class Component extends DCLogic {
           { label: '처리 건수', value: `${fmt(n)}건`, sub: `전체 ${fmt(recs.length)}건 중 ${pc(n, recs.length)}%`, color: NAVY },
           { label: '가장 많은 세부현안', value: subs[0] ? subs[0].name : '—', sub: subs[0] ? `${subs[0].n}건 · 부서 내 ${subs[0].share}%` : '', color: NAVY }
         ],
-        quality, summaryA: `${dept}에서는 이 기간 민원 `, summaryN: `${fmt(n)}건`, summaryB: `(전체 ${fmt(recs.length)}건 중 ${pc(n, recs.length)}%)을 처리했고, 가장 많은 세부현안은 `, summaryS: subs[0] ? subs[0].name : '—', summaryC: subs[0] ? `(${subs[0].n}건 · 부서 내 ${subs[0].share}%)입니다.` : '',
+        quality, summaryA: `${dn}에서는 이 기간 민원 `, summaryN: `${fmt(n)}건`, summaryB: `(전체 ${fmt(recs.length)}건 중 ${pc(n, recs.length)}%)을 처리했고, 가장 많은 세부현안은 `, summaryS: subs[0] ? subs[0].name : '—', summaryC: subs[0] ? `(${subs[0].n}건 · 부서 내 ${subs[0].share}%)입니다.` : '',
         subs, longs, us, unsat, unsatMsg, hasUnsat: unsat.length > 0, noUnsat: !unsat.length, hasTrend: to > from, trend,
         repeatMsg: rep.length ? `${fmt(Object.keys(per).length)}명 중 ${fmt(rep.length)}명이 ${REP_MIN}건 이상 접수했습니다.` : `${REP_MIN}건 이상 접수한 민원인이 없습니다.`,
         repeats: rep.slice(0, 3).map((v, k) => ({ name: `민원인${String.fromCharCode(65 + k)}`, n: v.length, subs: [...new Set(v.map(r => SUBS[r.s].n))].slice(0, 3).join(' · ') }))
@@ -1734,16 +1617,16 @@ class Component extends DCLogic {
   xlTables(v) {
     const dv = v.dv || {}, L = a => a || [];
     return {
-      quality: [['지표', dv.dept || '부서', '전체 평균', '판정', '기준'], L(dv.quality).map(q => [q.label, q.mine, q.all, q.verdict, q.basis])],
+      quality: [['지표', dv.dn || '부서', '전체 평균', '판정', '기준'], L(dv.quality).map(q => [q.label, q.mine, q.all, q.verdict, q.basis])],
       subs: [['현안', '세부현안', '건수', '비중(%)', '전년 동기 건수', '전년 대비'], L(dv.subs).map(x => [x.hyun, x.name, x.n, x.share, x.yPrev, `${x.yN} ${x.yP}`.trim()])],
       longs: [['신청일', '제목', '세부현안', '처리기간'], L(dv.longs).map(r => [r.date, r.title, r.sub, r.days])],
       unsat: [['신청일', '제목', '요약', '세부현안', '처리기간', '만족도', '추가답변', '민원인 접수 건수'], L(dv.us && dv.us.allCases).map(u => [u.date, u.title, u.summary, u.sub, u.days, u.sat, u.re, u.pn])],
-      pall: [['접수 건수', '민원인 수', '민원인 비중(%)', '민원 건수', '민원 비중(%)', '평균 처리기간', '평균 만족도 점수'], L(v.pAll).map(g => [g.name, g.n, g.share, g.recs, g.recShare, g.avg, g.score]).concat(v.pAllTot ? [['합계', v.pAllTot.n, '100.0', v.pAllTot.recs, '100.0', v.pAllTot.avg, v.pAllTot.score]] : [])],
+      pall: [['접수 건수', '민원인 (명)', '전체 민원인 중 (%)', '접수 민원 (건)', '전체 민원 중 (%)', '평균 처리기간', '평균 만족도 점수'], L(v.pAll).map(g => [g.name, g.n, g.share, g.recs, g.recShare, g.avg, g.score]).concat(v.pAllTot ? [['합계', v.pAllTot.n, '100.0', v.pAllTot.recs, '100.0', v.pAllTot.avg, v.pAllTot.score]] : [])],
       person: [['순위', '민원인', '접수 건수', '접수 기간', '구간별 접수', '주요 세부현안', '주요 처리부서', '만족도 응답', '불만족'], L(v.t3).map(p => [p.rank, p.id, p.n, p.span, L(p.months).filter(m => m.v).map(m => m.title).join(', '), L(p.sx && p.sx.items).map(x => `${x.name} ${x.n}건`).join(', '), L(p.dx && p.dx.items).map(x => `${x.name} ${x.n}건`).join(', '), p.resp, p.bad])],
       region: [['순위', '시도', '시군구', '읍면동', '건수', '비율(%)', '최다 세부현안'], L(v.regionRows).map(r => [r.rank, r.sido, r.gu, r.name, r.cnt, r.pct, r.sub])],
-      prows: [['민원인', '접수 건수', '주요 세부현안', '접수 기간', '불만족 건수', '평균 처리기간'], L(v.pRowsAll).map(p => [p.id, p.n, [p.top, p.topMore].filter(Boolean).join(' '), p.span, p.bad, p.avg])],
+      prows: [['다빈도 순위', '민원인', '접수 건수', '주요 세부현안', '접수 기간', '불만족 건수', '평균 처리기간'], L(v.pRowsAll).map(p => [p.rank, p.id, p.n, [p.top, p.topMore].filter(Boolean).join(' '), p.span, p.bad, p.avg])],
       xs: [['민원인', '주요 세부현안', '접수 건수', '불만족 건수'], L(v.xsList).map(b => [b.id, b.subs, b.n, b.bad])],
-      rank: [['순위', '세부현안', '현안', '건수', '비율(%)', '전년 동기 대비'], L(v.rankRows).map(r => [r.rank, r.name, r.hyun, r.n, r.p, r.yTitle ? `${r.yoy} (${r.yTitle})` : ''])],
+      rank: [['순위', v.rankDrill ? '세부현안' : '현안', v.rankDrill ? '현안' : '세부현안 수', '건수', '비율(%)', '전년 동기 대비'], L(v.rankRows).map(r => [r.rank, r.name, r.hyun, r.n, r.p, r.yTitle ? `${r.yoy} (${r.yTitle})` : ''])],
       kw: [['키워드', '언급 민원 수'], L(v.kwList)],
       channel: [['신청경로', '비율(%)'], L(v.donutLegend).map(l => [l.name, l.pct])],
       sat: [['만족도', '건수', '비율(%)'], L(v.satLegend).map(l => [l.name, l.cnt, l.pct])],
@@ -1773,17 +1656,25 @@ class Component extends DCLogic {
     const recs = (view === 'dept' ? dv.myRecs : v._allRecs) || [];
     const ws = window.XLSX.utils.aoa_to_sheet([REC_HEAD, ...recs.slice().sort((a, b) => a.mi - b.mi || a.day - b.day).map(recRow)]); ws['!cols'] = REC_W.map(w => ({ wch: w }));
     window.XLSX.utils.book_append_sheet(wb, ws, '민원 목록');
-    const tab = { dash: '전체민원현황', dept: `부서별현황_${dv.dept || ''}`, person: '민원인분석' }[view] || '';
+    const tab = { dash: '전체민원현황', dept: `부서별현황_${dv.dn || ''}`, person: '민원인분석' }[view] || '';
     window.XLSX.writeFile(wb, `${v.periodLabel}_${tab}_전체데이터`.replace(/[\\/:*?"<>|\s·~]+/g, '_') + '.xlsx');
   };
   renderVals() { const v = this._rv(); this._v = v; return v; }
   _rv() {
     const st = this.state, oi = this.officeIdx(), [office, home] = OFFICES[oi], D = officeData(oi);
-    const [from, to] = this.range(), len = to - from + 1;
+    const [from, to] = this.range(), len = to - from + 1; setRep(len);
     const cv = this.cov(oi), A = agg(oi, cv, from, to), T = A.total, c = this.compare(oi, from, to, st.cmp), pn = periodName(from, to);
     const ch = c.A ? (T - c.A.total) / c.A.total * 100 : null;
-    const trKey = `${oi}-${from}-${to}`, trS = st.trSel && st.trSel.k === trKey && st.trSel.i < A.bucket.length ? st.trSel.i : null;
-    const SR = trS == null ? A.recs : A.recs.filter(q => A.bs.idx(q) === trS), ST = SR.length;
+    const trKey = `${oi}-${from}-${to}`, dSt = st.trDrill && st.trDrill.k === trKey ? st.trDrill.s : [], [cf, ct] = dSt.length ? dSt[dSt.length - 1] : [from, to];
+    const TB = dSt.length ? agg(oi, cv, cf, ct) : A, A0 = TB, leaf = TB.bs.unit === '주별', tk = `${trKey}|${cf}-${ct}`;
+    const trS = leaf && st.trSel && st.trSel.k === tk && st.trSel.i < TB.bucket.length ? st.trSel.i : null;
+    const SR = trS == null ? TB.recs : TB.recs.filter(q => TB.bs.idx(q) === trS), ST = SR.length;
+    const trLbl = trS != null ? TB.bs.list[trS] : dSt.length ? rangeLabel(cf, ct) : null;
+    const trUp = () => this.setState({ trSel: null, trDrill: dSt.length > 1 ? { k: trKey, s: dSt.slice(0, -1) } : null });
+    const trGo = i => { if (leaf) return this.setState({ trSel: trS === i ? null : { k: tk, i } });
+      const ms = []; for (let k = cf; k <= ct; k++) if (TB.bs.idx({ mi: k, day: 1 }) === i) ms.push(k); if (ms.length) this.setState({ trSel: null, trDrill: { k: trKey, s: [...dSt, [ms[0], ms[ms.length - 1]]] } }); };
+    const trHi = i => trS === i;
+    const trHint = leaf ? ' · 누르면 그 주만 보기, 다시 누르면 해제' : ` · 누르면 ${TB.bs.unit === '분기별' ? '월별' : '주별'}로 펼쳐집니다`;
     const setView = v => () => { this.setState({ view: v }); window.scrollTo(0, 0); };
     const segStyle = on => ({ bg: on ? NAVY : '#fff', fg: on ? '#fff' : '#1e2124', weight: on ? 700 : 400 });
     const lastQEnd = MONTHS[L].cm % 3 === 0 ? L : L - (MONTHS[L].cm % 3);
@@ -1837,7 +1728,9 @@ class Component extends DCLogic {
     const stepStyle = (done, act) => ({ mark: done ? '✓' : '', bg: act ? '#eef2f7' : '#fff', dotBg: done ? GREEN : act ? NAVY : '#fff', dotFg: done || act ? '#fff' : '#464c53', dotLine: done ? GREEN : act ? NAVY : '#b1b8be', stColor: done ? GREEN : NAVY });
     return {
       dlChart: this.dlChart, dlXl: this.dlXl, dlTab: this.dlTab, dlTabTitle: '이 탭의 표 데이터와 민원 목록을 엑셀(xlsx) 한 파일로 내려받기', _allRecs: A.recs,
-      trSelOn: trS != null, trSelLabel: trS == null ? '' : A.bs.list[trS], trClear: () => this.setState({ trSel: null }),
+      trSelOn: trLbl != null, trSelLabel: trLbl || '', trClear: () => this.setState({ trSel: null, trDrill: null }),
+      trDrillOn: dSt.length > 0, trUp, trUpLabel: dSt.length > 1 ? rangeLabel(...dSt[dSt.length - 2]) : '전체 기간', trCurLabel: dSt.length ? rangeLabel(cf, ct) : '',
+      trWkOn: trS != null, trWkLabel: trS != null ? TB.bs.list[trS] : '', trWkClear: () => this.setState({ trSel: null }),
       isUpload: st.view === 'upload', notUpload: st.view !== 'upload',
       lastUpload: lastUp ? `최근 업로드 ${lastUp.at} · ${rangeLabel(lastUp.from, lastUp.to)}` : '저장된 데이터 없음',
       ...(() => {
@@ -1847,7 +1740,7 @@ class Component extends DCLogic {
         return {
           userLabel: `${office} · ${admin ? '정보화총괄 주무관' : `${this.props.userDept || '교육복지과'} 주무관`}`,
           roleOpts: [['admin', '총괄 담당자'], ['dept', '부서 담당자']].map(([k, l]) => { const on = (st.role || 'admin') === k; return { label: l, go: () => { this.setState({ role: k, view: k === 'dept' ? 'dept' : 'dash' }); window.scrollTo(0, 0); }, bg: on ? '#fff' : 'transparent', fg: on ? NAVY : '#fff', hover: on ? '#fff' : 'rgba(255,255,255,0.15)' }; }),
-          showMissing: admin && st.view !== 'upload' && hi < L, missingNote: hi < L ? `${rangeLabel(hi + 1, L)} 데이터가 아직 없습니다.` : '',
+          showMissing: false, missingNote: hi < L ? `${rangeLabel(hi + 1, L)} 데이터가 아직 없습니다.` : '',
           goManage: () => { this.setState({ view: 'upload' }); window.scrollTo(0, 0); },
           covYears: years,
           history: this.uploads(oi).map((u, k) => ({ file: u.file, period: `${rangeLabel(u.from, u.to)} (${u.to - u.from + 1}개월)`, rows: `${fmt(u.rows)}건`, by: u.by, at: u.at,
@@ -1996,11 +1889,13 @@ class Component extends DCLogic {
         { label: '평균 처리기간', value: limDays ? '분석 제한' : avg.toFixed(2), unit: limDays ? '' : '일', color: limDays ? RED : '#1e2124' },
         { label: '만족도 응답률', value: pc(A.satN, T), unit: '%', color: WARN }
       ],
+      ...(() => { const A = A0, T = A0.total, bmax = Math.max(1, ...A0.bucket), many = A0.bs.list.length > 14, len = A0.bs.list.length, peak = T > 0; return {
       xlTrend: A.bs.list.map((l, i) => [l, A.bucket[i], T ? +(A.bucket[i] / T * 100).toFixed(1) : 0]),
       trendUnit: A.bs.unit, trendN: A.bs.list.length, trendFirst: A.bs.list[0], trendLast: A.bs.list[A.bs.list.length - 1],
-      trendNote: (peak && len > 1 ? `최다 ${A.bs.list[A.bucket.indexOf(Math.max(...A.bucket))]} ${fmt(Math.max(...A.bucket))}건` : `총 ${fmt(T)}건`) + ' · 누르면 아래 차트가 그 구간으로 바뀝니다',
-      trend: A.bs.list.map((l, i) => ({ label: many && i % 2 ? '' : l, v: many ? '' : fmt(A.bucket[i]), p: many ? '' : `${pc(A.bucket[i], T)}%`, h: Math.round(A.bucket[i] / bmax * 85), color: A.bucket[i] === bmax ? NAVY : NAVY2 })),
+      trendNote: (peak && len > 1 ? `최다 ${A.bs.list[A.bucket.indexOf(Math.max(...A.bucket))]} ${fmt(Math.max(...A.bucket))}건` : `총 ${fmt(T)}건`) + trHint,
+      trend: A.bs.list.map((l, i) => ({ label: many && i % 2 ? '' : l, v: many ? '' : fmt(A.bucket[i]), p: many ? '' : `${pc(A.bucket[i], T)}%`, h: Math.round(A.bucket[i] / bmax * 85), color: A.bucket[i] === bmax ? NAVY : NAVY2 })) }; })(),
       ...(() => {
+        const A = A0, T = A0.total;
         const n = A.bucket.length, mx = Math.max(1, ...A.bucket), X = i => (i + 0.5) * 1000 / n, Y = v => 212 - v / mx * 186;
         const pts = A.bucket.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');
         const mean = T / n, show = n <= 14;
@@ -2016,7 +1911,7 @@ class Component extends DCLogic {
         return {
           curvePath: curve, curveArea: P.length ? `${curve} L${P[n - 1][0].toFixed(1)},215 L${P[0][0].toFixed(1)},215 Z` : '',
           lineGrid: grid,
-          lineHits: A.bucket.map((v, i) => ({ x: (X(i) - 500 / n).toFixed(1), w: (1000 / n).toFixed(1), go: () => this.setState({ trSel: trS === i ? null : { k: trKey, i } }), op: trS === i ? 0.16 : 0,
+          lineHits: A.bucket.map((v, i) => ({ x: (X(i) - 500 / n).toFixed(1), w: (1000 / n).toFixed(1), go: () => trGo(i), op: trHi(i) ? 0.16 : 0,
             move: e => this.setState({ tip: { x: e.clientX, y: e.clientY, color: v === mx ? NAVY : v === mn ? RED : NAVY2, group: v === mx ? '최다 발생' : v === mn ? '최소 발생' : '월별 건수', name: A.bs.list[i] || '', cnt: `${fmt(v)}건`, inGLabel: '', inG: '', all: `${pc(v, T)}%` } }),
             leave: () => this.setState({ tip: null }) })),
           linePts: pts, areaPts: `${X(0).toFixed(1)},215 ${pts} ${X(n - 1).toFixed(1)},215`,
@@ -2029,7 +1924,7 @@ class Component extends DCLogic {
         const cg = desc(cgO), top = cg.slice(0, 4), rest = sum(cg.slice(4).map(x => x[1])), segs = rest ? [...top, ['기타', rest]] : top;
         const C = 2 * Math.PI * 60, COL = [NAVY, '#2b9bb8', '#3fa654', '#f0a830', '#b1b8be']; let cum = 0;
         return {
-          chCaption: `${trS == null ? '' : `${A.bs.list[trS]} · `}총 ${fmt(ST)}건`,
+          chCaption: `${trLbl == null ? '' : `${trLbl} · `}총 ${fmt(ST)}건`,
           donut: segs.map(([k, v], i) => { const d = v / ST * C, o = -cum; cum += d; return { color: COL[i], da: `${d.toFixed(2)} ${(C - d).toFixed(2)}`, off: o.toFixed(2), title: `${k} ${fmt(v)}건` }; }),
           donutPct: `${pc(cg[0][1], ST)}%`, donutName: cg[0][0],
           donutLegend: segs.map(([k, v], i) => ({ name: k, pct: pc(v, ST), color: COL[i], go: () => { const tn = top.map(x => x[0]); this.openRecs(`신청경로 · ${k}`, '', SR.filter(q => k === '기타' && rest ? !tn.includes(CH[q.ch][0]) : CH[q.ch][0] === k)); } })),
@@ -2096,7 +1991,7 @@ class Component extends DCLogic {
         const COL = ['#063a74', '#8fb0d6', '#cdd1d5', '#f3b3a4', '#de3412'], FG = ['#fff', '#1e2124', '#1e2124', '#1e2124', '#fff'];
         const ord = [4, 3, 2, 1, 0];
         return {
-          satCaption: (trS == null ? '' : `${A.bs.list[trS]} · `) + (sN >= 10 ? `만족도 점수 ${((sA[0] * 5 + sA[1] * 4 + sA[2] * 3 + sA[3] * 2 + sA[4]) / sN).toFixed(2)} / 5점 · 응답 ${fmt(sN)}건` : `응답 ${fmt(sN)}건 (응답 부족)`), satLimited: !!limSat, satLimitMsg: limSat, satOk: !limSat,
+          satCaption: (trLbl == null ? '' : `${trLbl} · `) + (sN >= 10 ? `만족도 점수 ${((sA[0] * 5 + sA[1] * 4 + sA[2] * 3 + sA[3] * 2 + sA[4]) / sN).toFixed(2)} / 5점 · 응답 ${fmt(sN)}건` : `응답 ${fmt(sN)}건 (응답 부족)`), satLimited: !!limSat, satLimitMsg: limSat, satOk: !limSat,
           satRespP: pc(sN, ST), satRespN: fmt(sN), satNoP: pc(ST - sN, ST), satNoN: fmt(ST - sN),
           satUp: pc(sUp, sN), satDn: pc(sA[3] + sA[4], sN),
           satSegs: ord.map(i => { const w = sN ? sA[i] / sN * 100 : 0; return { w, bg: COL[i], fg: FG[i], lbl: w > 7 ? `${w.toFixed(0)}%` : '', title: `${SAT[i]} ${fmt(sA[i])}건` }; }),
@@ -2127,16 +2022,23 @@ class Component extends DCLogic {
       tip: this.state.tip ? { ...this.state.tip, left: `${Math.min(this.state.tip.x + 14, window.innerWidth - 230)}px`, top: `${this.state.tip.y + 16}px` } : {},
       ...(() => {
         const sc = SUBS.map(() => 0); SR.forEach(q => { sc[q.s]++; });
-        const rs = SUBS.map((x, j) => ({ x, j, v: sc[j] })).filter(r => r.v > 0).sort((a, b) => b.v - a.v), top = rs.slice(0, 10), mx = Math.max(1, ...top.map(r => r.v));
-        const yc = this.compare(oi, from, to, 'yoy'), yA = yc.ok ? yc.A : null, ys = SUBS.map(() => 0);
-        if (yA) (trS == null ? yA.recs : yA.recs.filter(q => yA.bs.idx(q) === trS)).forEach(q => { ys[q.s]++; });
-        const yo = j => { if (!yA) return { yN: '—', yP: '', yTitle: '전년 동기 데이터 없음', yC: '#6d7882', yoy: '' }; const p = ys[j], d = sc[j] - p;
+        const hc = HYUN.map(() => 0); SR.forEach(q => { hc[SUBS[q.s].h]++; });
+        const yc = this.compare(oi, cf, ct, 'yoy'), yA = yc.ok ? yc.A : null, ys = SUBS.map(() => 0), yh = HYUN.map(() => 0);
+        if (yA) (trS == null ? yA.recs : yA.recs.filter(q => yA.bs.idx(q) === trS)).forEach(q => { ys[q.s]++; yh[SUBS[q.s].h]++; });
+        const yo = (cur, p) => { if (!yA) return { yN: '—', yP: '', yTitle: '전년 동기 데이터 없음', yC: '#6d7882', yoy: '' }; const d = cur - p;
           const yN = !p ? '신규' : d > 0 ? `+${fmt(d)}건` : d < 0 ? `−${fmt(-d)}건` : '변동 없음', yP = p && d ? `(${d > 0 ? '+' : '−'}${Math.round(Math.abs(d) / p * 100)}%)` : '';
-          return { yN, yP, yoy: `${yN} ${yP}`.trim(), yTitle: `전년 동기 ${fmt(p)}건 → ${fmt(sc[j])}건`, yC: d > 0 ? '#de3412' : '#6d7882' }; };
-        const pre = trS == null ? '' : `${A.bs.list[trS]} · `;
+          return { yN, yP, yoy: `${yN} ${yP}`.trim(), yTitle: `전년 동기 ${fmt(p)}건 → ${fmt(cur)}건`, yC: d > 0 ? '#de3412' : '#6d7882' }; };
+        const pre = trLbl == null ? '' : `${trLbl} · `, hy = st.rankHy;
+        const drill = hy != null && hc[hy] > 0;
+        const items = drill
+          ? SUBS.map((x, j) => ({ x, j, v: sc[j] })).filter(r => r.x.h === hy && r.v > 0).sort((a, b) => b.v - a.v).map(r => ({ name: r.x.n, hyun: HYUN[hy][0], v: r.v, ...yo(r.v, ys[r.j]), go: () => this.openRecs(r.x.n, `${pre}${HYUN[hy][0]}`, SR.filter(q => q.s === r.j)), title: `${HYUN[hy][0]} › ${r.x.n} ${fmt(r.v)}건 (${pc(r.v, hc[hy])}%) · 눌러서 원문 보기` }))
+          : HYUN.map((h, i) => ({ i, v: hc[i] })).filter(r => r.v > 0).sort((a, b) => b.v - a.v).slice(0, 10).map(r => { const ns = SUBS.filter((x, j) => x.h === r.i && sc[j] > 0).length;
+              return { name: HYUN[r.i][0], hyun: `세부현안 ${ns}개`, v: r.v, ...yo(r.v, yh[r.i]), go: () => this.setState({ rankHy: r.i }), title: `${HYUN[r.i][0]} ${fmt(r.v)}건 (${pc(r.v, ST)}%) · 눌러서 세부현안 보기` }; });
+        const base = drill ? hc[hy] : ST, mx = Math.max(1, ...items.map(r => r.v));
         return {
-          rankCaption: `${trS == null ? '' : `${A.bs.list[trS]} ${fmt(ST)}건 · `}상위 ${top.length}개${yA ? '' : ' · 전년 동기 데이터 없음'}`,
-          rankRows: top.map((r, i) => ({ bd: i < top.length - 1 ? '#eef0f2' : 'transparent', rank: i + 1, rc: i < 3 ? NAVY : '#6d7882', name: r.x.n, hyun: HYUN[r.x.h][0] === r.x.n ? '' : HYUN[r.x.h][0], w: (r.v / mx * 100).toFixed(1), bg: i < 3 ? NAVY : NAVY2, n: fmt(r.v), p: pc(r.v, ST), ...yo(r.j), go: () => this.openRecs(r.x.n, `${pre}${HYUN[r.x.h][0]}`, SR.filter(q => q.s === r.j)), title: `${HYUN[r.x.h][0]} › ${r.x.n} ${fmt(r.v)}건 (${pc(r.v, ST)}%)` }))
+          rankDrill: drill, rankHyName: drill ? HYUN[hy][0] : '', rankUp: () => this.setState({ rankHy: null }), rankCol: drill ? '세부현안' : '현안',
+          rankCaption: `${trLbl == null ? '' : `${trLbl} ${fmt(ST)}건 · `}${drill ? `${HYUN[hy][0]} ${fmt(hc[hy])}건 · 세부현안 ${items.length}개` : `상위 ${items.length}개 · 누르면 세부현안`}${yA ? '' : ' · 전년 동기 데이터 없음'}`,
+          rankRows: items.map((r, i) => ({ ...r, bd: i < items.length - 1 ? '#eef0f2' : 'transparent', rank: i + 1, rc: i < 3 ? NAVY : '#6d7882', w: (r.v / mx * 100).toFixed(1), bg: i < 3 ? NAVY : NAVY2, n: fmt(r.v), p: pc(r.v, base) }))
         };
       })(),
       ...(() => {
@@ -2171,10 +2073,10 @@ class Component extends DCLogic {
         }
         const kwCloud = this._wc.items.map(({ t, c, i, f, vert, cx, cy }) => {
           const tier = i < 2 ? 0 : i < 6 ? 1 : i < 14 ? 2 : i < 28 ? 3 : i < 50 ? 4 : 5;
-          return { t, go: () => this.openRecs(`'${t}' 포함 민원`, trS == null ? '본문 키워드' : `${A.bs.list[trS]} · 본문 키워드`, SR.filter(q => q.k1 === t || q.k2 === t), t), title: `${t} ${fmt(c)}회 · 눌러서 원문 보기`,
+          return { t, go: () => this.openRecs(`'${t}' 포함 민원`, trLbl == null ? '본문 키워드' : `${trLbl} · 본문 키워드`, SR.filter(q => q.k1 === t || q.k2 === t), t), title: `${t} ${fmt(c)}회 · 눌러서 원문 보기`,
             left: `${(cx / W * 100).toFixed(2)}%`, top: `${(cy / H * 100).toFixed(2)}%`, fs: `${(f / 10).toFixed(2)}cqw`, tf: vert ? 'translate(-50%,-50%) rotate(-90deg)' : 'translate(-50%,-50%)', fw: i < 14 ? 700 : 500, color: PAL[tier] };
         });
-        return { kwCloud, kwList: kw.map(([t, c]) => [t, c]), kwCaption: `${trS == null ? '' : `${A.bs.list[trS]} · `}상위 ${kwCloud.length}개 · 누르면 원문` };
+        return { kwCloud, kwList: kw.map(([t, c]) => [t, c]), kwCaption: `${trLbl == null ? '' : `${trLbl} · `}상위 ${kwCloud.length}개 · 누르면 원문` };
       })(),
       _treemap: (() => {
         const sq = (items, x, y, w, h) => {
@@ -2258,8 +2160,8 @@ class Component extends DCLogic {
             const sl = Object.entries(bs).sort((x, y) => y[1].length - x[1].length).slice(0, 6), sm = Math.max(1, ...sl.map(x => x[1].length));
             const longs = limDays ? [] : [...done].sort((x, y) => y.days - x.days).slice(0, 3);
             return { ...row, hasLongs: longs.length > 0,
-              subs: sl.map(([s, l]) => { const dd = l.filter(r => r.done), sa = dd.length ? sum(dd.map(r => r.days)) / dd.length : null; return { go: () => this.openRecs(SUBS[s].n, dn, l), name: SUBS[s].n, n: `${l.length}건`, pct: l.length / c * 100, share: `${pc(l.length, c)}%`, avg: limDays || sa == null ? '—' : `${sa.toFixed(1)}일`, avgColor: !limDays && sa != null && sa > avg ? RED : '#464c53' }; }),
-              longs: longs.map(r => ({ go: () => this.openRecs(recTitle(r), dn, [r]), date: `${MONTHS[r.mi].label}.${String(r.day).padStart(2, '0')}`, title: recTitle(r), sub: SUBS[r.s].n, days: `${r.days.toFixed(1)}일` })) };
+              subs: sl.map(([s, l]) => { const dd = l.filter(r => r.done), sa = dd.length ? sum(dd.map(r => r.days)) / dd.length : null; return { go: () => this.openRecs(SUBS[s].n, dept, l), name: SUBS[s].n, n: `${l.length}건`, pct: l.length / c * 100, share: `${pc(l.length, c)}%`, avg: limDays || sa == null ? '—' : `${sa.toFixed(1)}일`, avgColor: !limDays && sa != null && sa > avg ? RED : '#464c53' }; }),
+              longs: longs.map(r => ({ go: () => this.openRecs(recTitle(r), dept, [r]), date: `${MONTHS[r.mi].label}.${String(r.day).padStart(2, '0')}`, title: recTitle(r), sub: SUBS[r.s].n, days: `${r.days.toFixed(1)}일` })) };
           })
         };
       })(),
@@ -2293,10 +2195,16 @@ class Component extends DCLogic {
         const dt = r => `${MONTHS[r.mi].label}.${String(r.day).padStart(2, '0')}`;
         const ord = rs => rs.slice().sort((a, b) => a.mi - b.mi || a.day - b.day);
         const subsOf = rs => { const c = {}; rs.forEach(r => { c[r.s] = (c[r.s] || 0) + 1; }); return Object.entries(c).sort((a, b) => b[1] - a[1]).map(x => +x[0]); };
-        const openP = st.openPerson, LIM = 100;
-        const pRowsAll = PL.map(([pid, rs]) => {
-          const o = ord(rs), ts = subsOf(rs), bad = rs.filter(r => r.sat >= 3).length, dn = rs.filter(r => r.done), ad = dn.length ? sum(dn.map(r => r.days)) / dn.length : null, isOpen = openP === pid, lb = pidLabel(pid);
-          return { id: lb, n: `${rs.length}건`, top: SUBS[ts[0]].n, topMore: ts.length > 1 ? `외 ${ts.length - 1}개` : '', span: `${dt(o[0])} ~ ${dt(o[o.length - 1])}`, bad: bad ? `${bad}건` : '—', badC: bad ? RED : '#6d7882', avg: ad == null || limDays ? '—' : `${ad.toFixed(1)}일`, mark: isOpen ? '−' : '+', bg: isOpen ? '#eef2f7' : '#fff', open: isOpen,
+        const openP = st.openPerson === undefined ? (PL[0] && PL[0][1].length >= REP_MIN ? PL[0][0] : null) : st.openPerson, LIM = 100, nb = A.bs.list.length;
+        const cntOf = (rs, f) => { const c = {}; rs.forEach(r => { const k = f(r); c[k] = (c[k] || 0) + 1; }); return Object.entries(c).sort((a, b) => b[1] - a[1]); };
+        const detail = (pid, rs) => { const bc = Array(nb).fill(0); rs.forEach(r => { const i = A.bs.idx(r); if (i >= 0 && i < nb) bc[i]++; }); const mx = Math.max(1, ...bc), O = st.t3Open || {};
+          const sec = (t, l) => ({ items: l.map(([name, n]) => ({ name, n })), more: false });
+          return { mTitle: `${A.bs.unit} 접수`, months: bc.map((v, i) => ({ v: v || '', h: (v / mx * 78).toFixed(1), min: v ? '3px' : '1px', bg: v === mx ? NAVY : v ? '#8fb0d6' : '#e6e8ea', lb: String(A.bs.list[i]).replace(/^\d{4}[.\-]\s*/, '').replace(/^0/, ''), title: `${A.bs.list[i]} ${v}건` })),
+            sx: sec('s', cntOf(rs, r => SUBS[r.s].n), '개'), dx: sec('d', cntOf(rs, r => r.dept || '미기재'), '곳'), resp: fmt(rs.filter(r => r.sat >= 0).length), badN: fmt(rs.filter(r => r.sat >= 3).length) }; };
+        const pRowsAll = PL.map(([pid, rs], idx) => {
+          const o = ord(rs), ts = subsOf(rs), bad = rs.filter(r => r.sat >= 3).length, dn = rs.filter(r => r.done), ad = dn.length ? sum(dn.map(r => r.days)) / dn.length : null, isOpen = openP === pid, lb = pidLabel(pid), isTop = idx < 3 && rs.length >= REP_MIN;
+          return { id: lb, rank: isTop ? idx + 1 : '', isTop, n: `${rs.length}건`, top: SUBS[ts[0]].n, topMore: ts.length > 1 ? `외 ${ts.length - 1}개` : '', span: `${dt(o[0])} ~ ${dt(o[o.length - 1])}`, bad: bad ? `${bad}건` : '—', badC: bad ? RED : '#6d7882', avg: ad == null || limDays ? '—' : `${ad.toFixed(1)}일`, mark: isOpen ? '−' : '+', bg: isOpen ? '#eef2f7' : isTop ? '#f6f8fb' : '#fff', open: isOpen,
+            ...(isOpen ? detail(pid, rs) : { months: [], sx: {}, dx: {} }),
             toggle: () => this.setState({ openPerson: isOpen ? null : pid }),
             all: () => this.openRecs(`${lb} 접수 이력`, '민원인 접수 이력', rs), histCap: `접수 ${rs.length}건 · 최신순`,
             hist: isOpen ? o.slice().reverse().map(r => ({ date: dt(r), sub: SUBS[r.s].n, title: recTitle(r), days: r.done ? dayFmt(r.days) : '처리 중', sat: r.sat >= 0 ? SAT[r.sat] : '무응답', sC: r.sat >= 3 ? RED : r.sat >= 0 && r.sat <= 1 ? NAVY : '#6d7882', go: () => this.openRecs(recTitle(r), lb, [r]) })) : [] };
@@ -2316,17 +2224,17 @@ class Component extends DCLogic {
             { label: '1인당 평균 접수 건수', value: (T / PN).toFixed(2), unit: '건', sub: `최다 ${PL.length ? PL[0][1].length : 0}건` }
           ],
           ...(() => {
-            const GB = [['1건', 1, 1], ['2건', 2, 2], ['3건', 3, 3], ['4~5건', 4, 5], ['6~9건', 6, 9], ['10건 이상', 10, 1e9]];
+            const GB = [['1건', 1, 1], ['2건', 2, 2], ...(REP_MIN > 3 ? [[REP_MIN === 4 ? '3건' : `3~${REP_MIN - 1}건`, 3, REP_MIN - 1]] : []), [`${REP_MIN}건 이상`, REP_MIN, 1e9]];
             const scF = rs => { const s = rs.filter(r => r.sat >= 0); return s.length ? `${(sum(s.map(r => 5 - r.sat)) / s.length).toFixed(2)}점` : '—'; };
             const adF = rs => { const d = rs.filter(r => r.done); return d.length && !limDays ? `${(sum(d.map(r => r.days)) / d.length).toFixed(1)}일` : '—'; };
             const row = (name, ps, rs) => ({ name, n: fmt(ps.length), share: pc(ps.length, PN), recs: fmt(rs.length), recShare: pc(rs.length, T), avg: adF(rs), score: scF(rs), go: () => this.openRecs(`${name} 접수 민원인의 민원`, '전체 민원인 현황', rs) });
             const gs = GB.map(([name, a, b]) => { const ps = PL.filter(p => p[1].length >= a && p[1].length <= b); return { name, a, ps, rs: ps.flatMap(p => p[1]) }; });
             const rp = PL.filter(p => p[1].length >= REP_MIN), rpR = rp.flatMap(p => p[1]);
             const plain = { pl: '0px', fw: 400, fg: '#1e2124', bg: 'transparent', line: '#eef0f2' }, sub = { pl: '16px', fw: 400, fg: '#464c53', bg: 'transparent', line: '#eef0f2' };
-            const MIX = [['1건', gs[0].ps.length, gs[0].rs.length, '#dfe6ef', '#1e2124'], ['2건', gs[1].ps.length, gs[1].rs.length, '#8fb0d6', '#1e2124'], [`다빈도 (${REP_MIN}건 이상)`, rp.length, rpR.length, NAVY, '#fff']];
+            const MIX = [['1건', gs[0].ps.length, gs[0].rs.length, '#dfe6ef', '#1e2124'], ['2건', gs[1].ps.length, gs[1].rs.length, '#8fb0d6', '#1e2124'], ...(gs.length > 3 ? [[gs[2].name, gs[2].ps.length, gs[2].rs.length, '#4f7fb5', '#fff']] : []), [`다빈도 (${REP_MIN}건 이상)`, rp.length, rpR.length, NAVY, '#fff']];
             const seg = (i, tot) => MIX.map(([nm, p, r, bg, fg]) => { const v = i ? r : p, w = tot ? v / tot * 100 : 0; return { w: w.toFixed(2), bg, fg, lbl: w >= 8 ? `${w.toFixed(1)}%` : '', title: `${nm} ${fmt(v)}${i ? '건' : '명'} (${w.toFixed(1)}%)` }; });
             return {
-              pAllCaption: `총 ${fmt(PL.length)}명 · 민원 ${fmt(T)}건 · 기간 내 접수 건수 기준`,
+              pAllCaption: `총 ${fmt(PL.length)}명 · 민원 ${fmt(T)}건 · 다빈도 기준: ${REP_MON}개월 · ${REP_MIN}건 이상`,
               pMix: [{ label: '민원인 수 비중', segs: seg(0, PL.length) }, { label: '민원 건수 비중', segs: seg(1, T) }],
               pMixLegend: MIX.map(([name, , , bg]) => ({ name, bg })),
               pAll: [
@@ -2337,7 +2245,7 @@ class Component extends DCLogic {
             };
           })(),
           pNoRep: !PL.length, pHasRep: PL.length > 0, pRows, pRowsAll,
-          pListCaption: `${fmt(PL.length)}명 · 접수 건수 많은 순 · 누르면 이력이 펼쳐집니다`,
+          pListCaption: `${fmt(PL.length)}명 · 접수 건수 많은 순 · 1~3위는 다빈도 Top3 · 누르면 상세가 펼쳐집니다`,
           pMore: PL.length > LIM, pMoreTxt: `상위 ${LIM}명만 표시했습니다. 전체 ${fmt(PL.length)}명은 Excel 버튼으로 내려받을 수 있습니다.`,
           xNone: !rD.length, xOk: rD.length > 0, xN: cS.length || 1,
           xCaption: `${home} 주소 ${fmt(hr.length)}건 · 하위주소 상위 ${rD.length}곳 × 세부현안 상위 ${cS.length}개`,
@@ -2416,12 +2324,6 @@ class Component extends DCLogic {
       reportCount: this.reports().length,
       reportRows: this.reports().map(r => { const p = periodName(r.from, r.to), wait = r.status === '검토 대기'; return { type: p.type, title: `${p.name} 민원처리 데이터 분석 결과`, created: r.created, status: r.status, stBg: wait ? '#fff4d6' : '#e6f3e9', stFg: wait ? WARN : GREEN, bg: st.drawer === r ? '#eef2f7' : '#fff', open: () => this.setState({ drawer: r }) }; }),
       drawerOpen: !!st.drawer, closeDrawer: () => this.setState({ drawer: null }),
-      dlReport: async () => {
-        const m = await import('./docx.js');
-        const blocks = [{ t: 'title', text: pv.title }, { t: 'meta', text: `${office} · 작성 ${pv.created || ''} · 민원 분석 보고서 생성 서비스` }];
-        (pv.sections || []).forEach(s => { blocks.push({ t: 'h', text: s.title }); (s.items || []).forEach(it => { if (it.head) blocks.push({ t: 'sub', text: it.head }); if (it.tbl) { blocks.push({ t: 'table', rows: it.tbl.rows, widths: it.tbl.widths.map(w => Math.round(w / it.tbl.widths.reduce((a, b) => a + b, 0) * 9000)) }); if (it.cap) blocks.push({ t: 'cap', text: `<${it.cap}>` }); } (it.lines || []).forEach(l => blocks.push({ t: 'li', text: l })); }); });
-        m.save(m.docx(blocks), `${pv.title.replace(/[\\/:*?"<>|]/g, '_')}.docx`, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-      },
       pv
     };
   }
