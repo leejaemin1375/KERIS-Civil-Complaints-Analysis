@@ -15,7 +15,7 @@ text{font-size:11px;fill:#1e2124;pointer-events:none;paint-order:stroke;stroke:#
 <script>
 let geo=null,counts={},sel='',key='';const cache={};
 const nm=f=>f.properties.name;
-const J=u=>cache[u]||(cache[u]=fetch(u).then(r=>{if(!r.ok)throw new Error(u);return r.json();}).then(fix));
+const GB=(()=>{try{return parent.location.href}catch(e){return document.baseURI}})();const J=u=>cache[u]||(cache[u]=fetch(new URL(u,GB)).then(r=>{if(!r.ok)throw new Error(u);return r.json();}).then(fix));
 const fix=g=>{g.features.forEach(f=>{const gm=f.geometry;if(!gm)return;const polys=gm.type==='Polygon'?[gm.coordinates]:gm.type==='MultiPolygon'?gm.coordinates:[];polys.forEach(p=>{if(d3.geoArea({type:'Polygon',coordinates:p})>2*Math.PI)p.forEach(r=>r.reverse());});});return g;};
 const send=m=>parent.postMessage(Object.assign({src:'sejong-map'},m),'*');
 function draw(){
